@@ -251,7 +251,7 @@ function MainCard({
             </div>
           </div>
 
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <div className="mt-4 grid grid-cols-2 gap-3">
             <Metric icon={BatteryCharging} label="Battery" value={product.battery} />
             <Metric icon={Gauge} label="Range" value={product.range} />
             <Metric icon={Gauge} label="Top Speed" value={product.topSpeed} />
@@ -287,13 +287,13 @@ function Metric({
   value: string
 }) {
   return (
-    <div className="flex min-h-[5.25rem] items-start gap-3 rounded-[1.4rem] border border-[rgba(16,27,45,0.06)] bg-slate-50/85 p-4 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.55)]">
+    <div className="flex min-h-[5rem] items-start gap-2 rounded-[1.25rem] border border-[rgba(16,27,45,0.06)] bg-slate-50/85 p-3 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.55)] sm:min-h-[5.25rem] sm:gap-3 sm:rounded-[1.4rem] sm:p-4">
       <div className="mt-0.5 rounded-xl bg-[rgba(49,94,230,0.08)] p-2 text-[var(--brand-start)]">
-        <Icon className="size-4" />
+        <Icon className="size-3.5 sm:size-4" />
       </div>
       <div className="min-w-0">
-        <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">{label}</div>
-        <div className="mt-2 break-words text-sm font-semibold leading-6 text-slate-900">{value}</div>
+        <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500 sm:text-[11px] sm:tracking-[0.2em]">{label}</div>
+        <div className="mt-1.5 break-words text-sm font-semibold leading-5 text-slate-900 sm:mt-2 sm:leading-6">{value}</div>
       </div>
     </div>
   )
