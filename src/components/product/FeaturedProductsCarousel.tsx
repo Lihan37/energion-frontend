@@ -294,7 +294,7 @@ function Metric({
       <div className="min-w-0">
         <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500 sm:text-[11px] sm:tracking-[0.2em]">{label}</div>
         <div
-          className="mt-1.5 line-clamp-2 break-words text-sm font-semibold leading-5 text-slate-900 sm:mt-2 sm:leading-6"
+          className="mt-1.5 line-clamp-1 break-words text-sm font-semibold leading-5 text-slate-900 sm:mt-2 sm:leading-6"
           title={value}
         >
           {getCompactMetricValue(label, value)}
