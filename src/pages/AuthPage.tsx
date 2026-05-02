@@ -61,20 +61,8 @@ export function AuthPage() {
 
   return (
     <div className="flex min-h-screen items-center py-12">
-      <Container className="grid gap-8 lg:grid-cols-[0.92fr_1.08fr]">
-        <div className="rounded-[2.5rem] border border-white/10 bg-white/6 p-8 text-white backdrop-blur">
-          <div className="inline-flex rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-semibold tracking-[0.22em] uppercase text-[var(--brand-end)]">
-            Account Access
-          </div>
-          <h1 className="mt-6 font-display text-5xl font-semibold tracking-tight">
-            Login or create your account from one clean flow.
-          </h1>
-          <p className="mt-5 max-w-xl text-base leading-8 text-slate-300">
-            This page now handles both signup and login for the Energion platform. If the phone number is marked as admin on the backend, the account gets admin access automatically.
-          </p>
-        </div>
-
-        <div className="surface-card rounded-[2.5rem] border border-white/40 p-6 shadow-[0_24px_80px_rgba(8,17,31,0.22)] sm:p-8">
+      <Container className="flex justify-center">
+        <div className="surface-card w-full max-w-3xl rounded-[2.5rem] border border-white/40 p-6 shadow-[0_24px_80px_rgba(8,17,31,0.22)] sm:p-8">
           <div className="flex flex-wrap gap-3 rounded-full border border-[rgba(16,27,45,0.08)] bg-slate-50 p-2">
             {(['login', 'signup'] as const).map((tab) => (
               <button
