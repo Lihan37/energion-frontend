@@ -20,10 +20,11 @@ export function ProductCard({ product, onOpen }: ProductCardProps) {
             className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-slate-100 text-center">
-            <div className="text-slate-500">
-              <ImageOff className="mx-auto size-8 text-slate-400" />
-              <div className="mt-3 text-sm font-medium">Image coming soon</div>
+          <div className="flex h-full w-full items-center justify-center bg-[linear-gradient(180deg,#e8eefc_0%,#dbe7ff_36%,#10172d_100%)] text-center">
+            <div className="px-6 text-slate-700">
+              <ImageOff className="mx-auto size-8 text-[var(--brand-start)]/70" />
+              <div className="mt-3 text-sm font-semibold">{product.name}</div>
+              <div className="mt-1 text-xs uppercase tracking-[0.22em] text-slate-500">Visual coming soon</div>
             </div>
           </div>
         )}
@@ -48,8 +49,9 @@ export function ProductCard({ product, onOpen }: ProductCardProps) {
           </div>
         </div>
 
-        <div className="grid gap-3 rounded-[1.5rem] border border-[rgba(16,27,45,0.06)] bg-slate-50/80 p-4 sm:grid-cols-3">
+        <div className="grid gap-3 rounded-[1.5rem] border border-[rgba(16,27,45,0.06)] bg-slate-50/80 p-4 sm:grid-cols-2">
           <Metric icon={BatteryCharging} label="Battery" value={product.battery} />
+          <Metric icon={Gauge} label="Range" value={product.range} />
           <Metric icon={Gauge} label="Top Speed" value={product.topSpeed} />
           <Metric icon={Timer} label="Charge" value={product.chargingTime} />
         </div>
@@ -72,13 +74,13 @@ function Metric({
   value: string
 }) {
   return (
-    <div className="flex items-start gap-3 rounded-2xl bg-white/90 p-3">
+    <div className="flex min-h-20 items-start gap-3 rounded-2xl bg-white/90 p-3">
       <div className="mt-0.5 rounded-xl bg-[rgba(49,94,230,0.08)] p-2 text-[var(--brand-start)]">
         <Icon className="size-4" />
       </div>
-      <div>
+      <div className="min-w-0">
         <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">{label}</div>
-        <div className="mt-1 text-sm font-semibold text-slate-900">{value}</div>
+        <div className="mt-1 break-words text-sm font-semibold text-slate-900">{value}</div>
       </div>
     </div>
   )

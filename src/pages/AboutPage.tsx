@@ -74,7 +74,7 @@ export function AboutPage() {
     <div className="py-14 sm:py-16">
       <Container className="space-y-14">
         <Reveal>
-          <section className="relative overflow-hidden rounded-[2.6rem] border border-[rgba(16,27,45,0.08)] bg-slate-950 px-6 py-8 text-white shadow-[var(--shadow-soft)] sm:px-8 lg:px-12 lg:py-12">
+          <section className="relative overflow-hidden rounded-[2.6rem] border border-[rgba(16,27,45,0.08)] bg-slate-950 px-6 py-8 text-white shadow-(--shadow-soft) sm:px-8 lg:px-12 lg:py-12">
             <div className="absolute right-0 top-0 h-56 w-56 rounded-full bg-[rgba(96,165,250,0.22)] blur-3xl" />
             <div className="absolute bottom-0 left-0 h-56 w-56 rounded-full bg-[rgba(37,99,235,0.18)] blur-3xl" />
 
@@ -108,7 +108,7 @@ export function AboutPage() {
 
         <div className="grid gap-8 lg:grid-cols-[1.08fr_0.92fr]">
           <Reveal>
-            <section className="surface-card rounded-[2.4rem] border border-[rgba(16,27,45,0.08)] p-6 shadow-[var(--shadow-card)] sm:p-8 lg:p-10">
+            <section className="surface-card rounded-[2.4rem] border border-[rgba(16,27,45,0.08)] p-6 shadow-(--shadow-card) sm:p-8 lg:p-10">
               <Badge>Company Narrative</Badge>
               <h2 className="mt-5 max-w-3xl font-display text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
                 The actual company story, blended into a cleaner and more structured About experience.
@@ -125,7 +125,7 @@ export function AboutPage() {
             {pillars.map((pillar, index) => (
               <Reveal key={pillar.title} delay={index * 0.08}>
                 <section
-                  className={`rounded-[2.2rem] border p-6 shadow-[var(--shadow-card)] sm:p-8 ${
+                  className={`rounded-[2.2rem] border p-6 shadow-(--shadow-card) sm:p-8 ${
                     pillar.tone === 'dark'
                       ? 'border-slate-950 bg-slate-950 text-white'
                       : 'surface-card border-[rgba(16,27,45,0.08)] text-slate-950'
@@ -134,7 +134,7 @@ export function AboutPage() {
                   <div
                     className={`inline-flex rounded-2xl p-3 ${
                       pillar.tone === 'dark'
-                        ? 'bg-white/10 text-[var(--brand-end)]'
+                        ? 'bg-white/10 text-(--brand-end)'
                         : 'bg-brand-gradient text-white'
                     }`}
                   >
@@ -155,7 +155,7 @@ export function AboutPage() {
         </div>
 
         <Reveal>
-          <section className="grid gap-8 rounded-[2.5rem] border border-[rgba(16,27,45,0.08)] bg-[linear-gradient(135deg,rgba(255,255,255,0.92),rgba(248,251,255,0.82))] px-6 py-8 shadow-[var(--shadow-soft)] sm:px-8 lg:grid-cols-[0.92fr_1.08fr] lg:px-12 lg:py-10">
+          <section className="grid gap-8 rounded-[2.5rem] border border-[rgba(16,27,45,0.08)] bg-[linear-gradient(135deg,rgba(255,255,255,0.92),rgba(248,251,255,0.82))] px-6 py-8 shadow-(--shadow-soft) sm:px-8 lg:grid-cols-[0.92fr_1.08fr] lg:px-12 lg:py-10">
             <div className="space-y-5">
               <Badge>How We Operate</Badge>
               <h2 className="font-display text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">

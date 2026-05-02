@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { ArrowRight, BatteryCharging, Bike, Gauge, ShieldCheck, Zap } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
-import { ProductCard } from '../components/product/ProductCard'
+import { FeaturedProductsCarousel } from '../components/product/FeaturedProductsCarousel'
 import { ProductModal } from '../components/product/ProductModal'
 import { Badge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
@@ -62,6 +62,12 @@ export function HomePage() {
     queryFn: getProducts,
     select: (items) => items.filter((item) => item.featured).slice(0, 3),
   })
+
+  const featuredProducts = productsQuery.data ?? []
+  const featuredNames = featuredProducts.map((product) => product.name).join(', ')
+  const featuredSummary = featuredProducts.length
+    ? `Live from the catalog: ${featuredNames}. Key details like battery, range, top speed, charging time, and pricing now come directly from the database.`
+    : 'Live product data from the catalog will appear here as soon as featured models are available.'
 
   useEffect(() => {
     const interval = window.setInterval(() => {
@@ -173,8 +179,8 @@ export function HomePage() {
         <Container className="space-y-10">
           <SectionHeading
             eyebrow="Featured Bikes"
-            title="A premium lineup for commuting, performance, and practical daily utility."
-            description="Three product families shaped around modern riders, with confident styling and real-world usability."
+            title="Live Energion models with the specs riders actually compare first."
+            description={featuredSummary}
             action={
               <Link to="/products">
                 <Button variant="secondary">View all bikes</Button>
@@ -183,12 +189,15 @@ export function HomePage() {
           />
           {productsQuery.isLoading ? (
             <LoadingState label="Loading featured bikes..." />
-          ) : (
-            <div className="grid gap-6 lg:grid-cols-3">
-              {productsQuery.data?.map((product) => (
-                <ProductCard key={product.id} product={product} onOpen={setSelectedProduct} />
-              ))}
+          ) : featuredProducts.length === 0 ? (
+            <div className="rounded-[2rem] border border-dashed border-[rgba(16,27,45,0.12)] bg-white/80 px-6 py-14 text-center">
+              <h3 className="font-display text-2xl font-semibold text-slate-950">No featured products yet</h3>
+              <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-600">
+                Add or mark products as featured from the admin dashboard and they will appear here automatically.
+              </p>
             </div>
+          ) : (
+            <FeaturedProductsCarousel products={featuredProducts} onOpen={setSelectedProduct} />
           )}
         </Container>
       </section>
