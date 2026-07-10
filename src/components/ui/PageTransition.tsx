@@ -6,16 +6,17 @@ export function PageTransition({ children }: PropsWithChildren) {
   const location = useLocation()
   const prefersReducedMotion = useReducedMotion()
 
-  // Shorter, lower-travel crossfade keeps route changes feeling instant while
-  // still smooth. Reduced-motion users get a plain fade with no vertical shift.
+  // `popLayout` lets the incoming page take its place immediately while the old
+  // one fades out on top — no "wait for exit" gap, so navigation feels instant.
+  // Reduced-motion users get a plain, near-instant fade with no vertical shift.
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence mode="popLayout" initial={false}>
       <motion.div
         key={location.pathname}
-        initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 10 }}
+        initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 8 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: prefersReducedMotion ? 0 : 6 }}
-        transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: prefersReducedMotion ? 0.12 : 0.2, ease: [0.16, 1, 0.3, 1] }}
       >
         {children}
       </motion.div>

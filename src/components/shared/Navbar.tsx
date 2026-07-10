@@ -55,19 +55,29 @@ export function Navbar() {
 
         <nav className="hidden items-center gap-1 rounded-full border border-[rgba(16,27,45,0.06)] bg-white/80 px-2 py-2 lg:flex">
           {navItems.map((item) => (
-            <motion.div key={item.href} whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>
-              <NavLink
-                to={item.href}
-                className={({ isActive }) =>
-                  cn(
-                    'rounded-full px-4 py-2 text-sm font-semibold text-slate-600 transition hover:text-slate-950',
-                    isActive && 'bg-brand-gradient !text-white shadow-[0_10px_20px_rgba(49,94,230,0.18)]',
-                  )
-                }
-              >
-                {item.label}
-              </NavLink>
-            </motion.div>
+            <NavLink
+              key={item.href}
+              to={item.href}
+              className={({ isActive }) =>
+                cn(
+                  'relative rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-200',
+                  isActive ? 'text-white' : 'text-slate-600 hover:text-slate-950',
+                )
+              }
+            >
+              {({ isActive }) => (
+                <>
+                  {isActive ? (
+                    <motion.span
+                      layoutId="nav-active-pill"
+                      className="absolute inset-0 -z-10 rounded-full bg-brand-gradient shadow-[0_10px_20px_rgba(49,94,230,0.18)]"
+                      transition={{ type: 'spring', stiffness: 480, damping: 38, mass: 0.7 }}
+                    />
+                  ) : null}
+                  <span className="relative">{item.label}</span>
+                </>
+              )}
+            </NavLink>
           ))}
         </nav>
 
