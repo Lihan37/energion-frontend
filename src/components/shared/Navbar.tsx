@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 
 import { navItems } from '../../constants/site'
+import { prefetchRoute } from '../../app/routePrefetch'
 import { useAuth } from '../../context/AuthContext'
 import logo from '../../assets/Energion Mobility logo-01.png'
 import { cn } from '../../lib/cn'
@@ -58,9 +59,11 @@ export function Navbar() {
             <NavLink
               key={item.href}
               to={item.href}
+              onMouseEnter={() => prefetchRoute(item.href)}
+              onFocus={() => prefetchRoute(item.href)}
               className={({ isActive }) =>
                 cn(
-                  'relative rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-200',
+                  'relative isolate rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-200',
                   isActive ? 'text-white' : 'text-slate-600 hover:text-slate-950',
                 )
               }
@@ -74,7 +77,7 @@ export function Navbar() {
                       transition={{ type: 'spring', stiffness: 480, damping: 38, mass: 0.7 }}
                     />
                   ) : null}
-                  <span className="relative">{item.label}</span>
+                  <span className="relative z-10">{item.label}</span>
                 </>
               )}
             </NavLink>
