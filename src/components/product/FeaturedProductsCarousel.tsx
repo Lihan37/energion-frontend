@@ -57,7 +57,7 @@ export function FeaturedProductsCarousel({ products, onOpen }: FeaturedProductsC
   return (
     <div className="space-y-5">
       <div className="relative">
-        <div className="relative hidden h-[37rem] items-center justify-center overflow-hidden lg:flex">
+        <div className="relative hidden h-148 items-center justify-center overflow-hidden lg:flex">
           <PreviewCard
             product={previousProduct}
             position="left"
@@ -169,7 +169,7 @@ function PreviewCard({
       type="button"
       onClick={onClick}
       className={cn(
-        'absolute top-10 z-10 h-[29rem] w-[24rem] overflow-hidden rounded-[2rem] border border-[rgba(16,27,45,0.08)] bg-white/80 text-left shadow-[0_18px_42px_rgba(8,17,31,0.08)]',
+        'absolute top-10 z-10 h-116 w-[24rem] overflow-hidden rounded-4xl border border-[rgba(16,27,45,0.08)] bg-white/80 text-left shadow-[0_18px_42px_rgba(8,17,31,0.08)]',
         position === 'left' ? 'left-0' : 'right-0',
       )}
       initial={false}
@@ -186,7 +186,7 @@ function PreviewCard({
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-[linear-gradient(180deg,#f3f7ff_0%,#e4edff_55%,#d7e4ff_100%)] text-center">
             <div className="px-6 text-slate-700">
-              <ImageOff className="mx-auto size-8 text-[var(--brand-start)]/70" />
+              <ImageOff className="mx-auto size-8 text-(--brand-start)/70" />
               <div className="mt-3 text-sm font-semibold">{product.name}</div>
             </div>
           </div>
@@ -216,13 +216,13 @@ function MainCard({
   return (
     <article className="overflow-hidden rounded-[2.35rem] border border-[rgba(16,27,45,0.08)] bg-white shadow-[0_28px_70px_rgba(8,17,31,0.14)]">
       <div className={cn('grid gap-0', compact ? 'lg:grid-cols-1' : 'xl:grid-cols-[0.92fr_1.08fr]')}>
-        <div className={cn('relative overflow-hidden bg-slate-100', compact ? 'h-72 sm:h-80' : 'h-[28rem] xl:h-full')}>
+        <div className={cn('relative overflow-hidden bg-slate-100', compact ? 'h-72 sm:h-80' : 'h-112h-full')}>
           {product.image ? (
             <SmoothImage src={product.image} alt={product.name} className="h-full w-full object-cover" />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-[linear-gradient(180deg,#f3f7ff_0%,#e4edff_55%,#d7e4ff_100%)] text-center">
               <div className="px-6 text-slate-700">
-                <ImageOff className="mx-auto size-10 text-[var(--brand-start)]/70" />
+                <ImageOff className="mx-auto size-10 text-(--brand-start)/70" />
                 <div className="mt-4 text-lg font-semibold">{product.name}</div>
                 <div className="mt-2 text-xs uppercase tracking-[0.24em] text-slate-500">Visual coming soon</div>
               </div>
@@ -239,13 +239,13 @@ function MainCard({
             <h3 className="font-display text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
               {product.name}
             </h3>
-            <p className="mt-3 min-h-[7.5rem] max-w-[23rem] text-sm leading-8 text-slate-600 sm:text-base">
+            <p className="mt-3 min-h-30 max-w-92 text-sm leading-8 text-slate-600 sm:text-base">
               {product.shortDescription}
             </p>
             <div className="mt-4 inline-flex rounded-[1.9rem] bg-[linear-gradient(180deg,rgba(245,247,255,0.95),rgba(236,242,255,0.95))] px-5 py-4 text-left shadow-[inset_0_0_0_1px_rgba(49,94,230,0.06)]">
               <div>
                 <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500">Starting</div>
-                <div className="mt-2 text-2xl font-bold text-[var(--brand-start)] sm:text-[2rem]">
+                <div className="mt-2 text-2xl font-bold text-(--brand-start) sm:text-[2rem]">
                   Tk {product.price.toLocaleString()}
                 </div>
               </div>
@@ -288,14 +288,14 @@ function Metric({
   value: string
 }) {
   return (
-    <div className="flex min-h-[5rem] items-start gap-2 rounded-[1.25rem] border border-[rgba(16,27,45,0.06)] bg-slate-50/85 p-3 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.55)] sm:min-h-[5.25rem] sm:gap-3 sm:rounded-[1.4rem] sm:p-4">
-      <div className="mt-0.5 rounded-xl bg-[rgba(49,94,230,0.08)] p-2 text-[var(--brand-start)]">
+    <div className="flex min-h-20 items-start gap-2 rounded-[1.25rem] border border-[rgba(16,27,45,0.06)] bg-slate-50/85 p-3 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.55)] sm:min-h-21 sm:gap-3 sm:rounded-[1.4rem] sm:p-4">
+      <div className="mt-0.5 rounded-xl bg-[rgba(49,94,230,0.08)] p-2 text-(--brand-start)">
         <Icon className="size-3.5 sm:size-4" />
       </div>
       <div className="min-w-0">
         <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500 sm:text-[11px] sm:tracking-[0.2em]">{label}</div>
         <div
-          className="mt-1.5 line-clamp-1 break-words text-sm font-semibold leading-5 text-slate-900 sm:mt-2 sm:leading-6"
+          className="mt-1.5 line-clamp-1 wrap-break-word text-sm font-semibold leading-5 text-slate-900 sm:mt-2 sm:leading-6"
           title={value}
         >
           {getCompactMetricValue(label, value)}
