@@ -63,7 +63,7 @@ export function ContactPage() {
             {infoCards.map((card) => (
               <div
                 key={card.label}
-                className="surface-card rounded-[2rem] border border-[rgba(16,27,45,0.08)] p-6 shadow-[var(--shadow-card)]"
+                className="surface-card card-lift rounded-[2rem] border border-[rgba(16,27,45,0.08)] p-6 shadow-[var(--shadow-card)]"
               >
                 <div className="inline-flex rounded-2xl bg-[rgba(49,94,230,0.08)] p-3 text-[var(--brand-start)]">
                   <card.icon className="size-5" />

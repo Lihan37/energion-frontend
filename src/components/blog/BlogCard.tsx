@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 
 import type { Blog } from '../../types/blog'
 import { Badge } from '../ui/Badge'
+import { SmoothImage } from '../ui/SmoothImage'
 
 interface BlogCardProps {
   blog: Blog
@@ -10,12 +11,12 @@ interface BlogCardProps {
 
 export function BlogCard({ blog }: BlogCardProps) {
   return (
-    <article className="group surface-card overflow-hidden rounded-[2rem] border border-[rgba(16,27,45,0.08)] shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-1">
+    <article className="group surface-card card-lift overflow-hidden rounded-[2rem] border border-[rgba(16,27,45,0.08)] shadow-[var(--shadow-card)]">
       <div className="relative h-64 overflow-hidden">
-        <img
+        <SmoothImage
           src={blog.coverImage}
           alt={blog.title}
-          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+          className="h-full w-full object-cover transition duration-[600ms] ease-out group-hover:scale-[1.06]"
         />
         <div className="absolute left-5 top-5">
           <Badge tone="gradient">{blog.category}</Badge>
@@ -34,10 +35,10 @@ export function BlogCard({ blog }: BlogCardProps) {
           <span className="text-sm font-medium text-slate-500">{blog.author}</span>
           <Link
             to={`/blog/${blog.slug}`}
-            className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--brand-start)]"
+            className="group/link inline-flex items-center gap-2 text-sm font-semibold text-[var(--brand-start)]"
           >
             Read article
-            <ArrowRight className="size-4" />
+            <ArrowRight className="size-4 transition-transform duration-300 ease-out group-hover/link:translate-x-1" />
           </Link>
         </div>
       </div>

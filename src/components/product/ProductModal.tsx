@@ -4,6 +4,7 @@ import type { Product } from '../../types/product'
 import { Badge } from '../ui/Badge'
 import { Button } from '../ui/Button'
 import { Modal } from '../ui/Modal'
+import { SmoothImage } from '../ui/SmoothImage'
 
 interface ProductModalProps {
   product: Product | null
@@ -21,7 +22,7 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
           <div className="space-y-5">
             <div className="overflow-hidden rounded-[1.75rem]">
               {product.image ? (
-                <img src={product.image} alt={product.name} className="h-[360px] w-full object-cover" />
+                <SmoothImage src={product.image} alt={product.name} loading="eager" className="h-[360px] w-full object-cover" />
               ) : (
                 <div className="flex h-[360px] w-full items-center justify-center bg-slate-100 text-center">
                   <div className="text-slate-500">

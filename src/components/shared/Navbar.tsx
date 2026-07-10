@@ -12,6 +12,7 @@ import { Container } from '../ui/Container'
 
 export function Navbar() {
   const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const { user, isLoading, logout } = useAuth()
 
   useEffect(() => {
@@ -27,8 +28,22 @@ export function Navbar() {
     }
   }, [open])
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   return (
-    <header className="fixed inset-x-0 top-0 z-40 border-b border-white/50 bg-[rgba(248,251,255,0.78)] backdrop-blur-xl">
+    <header
+      className={cn(
+        'fixed inset-x-0 top-0 z-40 border-b transition-all duration-300',
+        scrolled
+          ? 'border-[rgba(16,27,45,0.08)] bg-[rgba(248,251,255,0.9)] shadow-[0_10px_30px_rgba(8,17,31,0.06)] backdrop-blur-xl'
+          : 'border-white/50 bg-[rgba(248,251,255,0.78)] backdrop-blur-xl',
+      )}
+    >
       <Container className="flex h-20 items-center justify-between gap-6">
         <Link to="/" className="flex items-center gap-3">
           <img

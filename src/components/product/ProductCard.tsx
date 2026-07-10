@@ -3,6 +3,7 @@ import { BatteryCharging, Gauge, ImageOff, Timer } from 'lucide-react'
 import type { Product } from '../../types/product'
 import { Badge } from '../ui/Badge'
 import { Button } from '../ui/Button'
+import { SmoothImage } from '../ui/SmoothImage'
 
 interface ProductCardProps {
   product: Product
@@ -11,13 +12,13 @@ interface ProductCardProps {
 
 export function ProductCard({ product, onOpen }: ProductCardProps) {
   return (
-    <article className="group surface-card overflow-hidden rounded-[2rem] border border-[rgba(16,27,45,0.08)] shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-1">
+    <article className="group surface-card card-lift overflow-hidden rounded-[2rem] border border-[rgba(16,27,45,0.08)] shadow-[var(--shadow-card)]">
       <div className="relative h-64 overflow-hidden">
         {product.image ? (
-          <img
+          <SmoothImage
             src={product.image}
             alt={product.name}
-            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+            className="h-full w-full object-cover transition duration-[600ms] ease-out group-hover:scale-[1.06]"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-[linear-gradient(180deg,#e8eefc_0%,#dbe7ff_36%,#10172d_100%)] text-center">

@@ -7,6 +7,7 @@ import { Button } from '../components/ui/Button'
 import { Container } from '../components/ui/Container'
 import { EmptyState } from '../components/ui/EmptyState'
 import { LoadingState } from '../components/ui/LoadingState'
+import { SmoothImage } from '../components/ui/SmoothImage'
 import { getBlogBySlug } from '../services/blogService'
 
 export function BlogDetailsPage() {
@@ -53,7 +54,7 @@ export function BlogDetailsPage() {
 
         <article className="surface-card overflow-hidden rounded-[2.5rem] border border-[rgba(16,27,45,0.08)] shadow-[var(--shadow-soft)]">
           <div className="relative h-[340px] overflow-hidden sm:h-[460px]">
-            <img src={blog.coverImage} alt={blog.title} className="h-full w-full object-cover" />
+            <SmoothImage src={blog.coverImage} alt={blog.title} loading="eager" className="h-full w-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/10 to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10">
               <Badge tone="gradient">{blog.category}</Badge>

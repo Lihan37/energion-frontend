@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { motion } from 'framer-motion'
 import type { Variants } from 'framer-motion'
 import { ArrowRight, BatteryCharging, Bike, Gauge, ShieldCheck, Zap } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import { FeaturedProductsCarousel } from '../components/product/FeaturedProductsCarousel'
@@ -93,7 +93,6 @@ const heroCardVariants: Variants = {
 
 export function HomePage() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
-  const [headlineAnimationKey, setHeadlineAnimationKey] = useState(0)
   const productsQuery = useQuery({
     queryKey: ['products'],
     queryFn: getProducts,
@@ -105,14 +104,6 @@ export function HomePage() {
   const featuredSummary = featuredProducts.length
     ? `Live from the catalog: ${featuredNames}. Key details like battery, range, top speed, charging time, and pricing now come directly from the database.`
     : 'Live product data from the catalog will appear here as soon as featured models are available.'
-
-  useEffect(() => {
-    const interval = window.setInterval(() => {
-      setHeadlineAnimationKey((current) => current + 1)
-    }, 5200)
-
-    return () => window.clearInterval(interval)
-  }, [])
 
   return (
     <div className="pb-16">
@@ -142,13 +133,10 @@ export function HomePage() {
                     <Badge tone="gradient">Future-ready electric mobility</Badge>
                   </motion.div>
                   <motion.div className="space-y-5" variants={heroItemVariants}>
-                    <h1
-                      key={headlineAnimationKey}
-                      className="max-w-4xl font-display text-3xl font-semibold tracking-tight text-white sm:text-5xl lg:text-6xl"
-                    >
+                    <h1 className="max-w-4xl font-display text-3xl font-semibold tracking-tight text-white sm:text-5xl lg:text-6xl">
                       {heroHeadlineWords.map((word, index) => (
                         <motion.span
-                          key={`${headlineAnimationKey}-${word}-${index}`}
+                          key={`${word}-${index}`}
                           className="mr-[0.28em] inline-block last:mr-0"
                           initial={{ opacity: 0, y: 22, filter: 'blur(8px)' }}
                           animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}

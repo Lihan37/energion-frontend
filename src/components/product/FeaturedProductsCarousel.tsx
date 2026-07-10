@@ -7,6 +7,7 @@ import { cn } from '../../lib/cn'
 import type { Product } from '../../types/product'
 import { Badge } from '../ui/Badge'
 import { Button } from '../ui/Button'
+import { SmoothImage } from '../ui/SmoothImage'
 
 interface FeaturedProductsCarouselProps {
   products: Product[]
@@ -181,7 +182,7 @@ function PreviewCard({
     >
       <div className="relative h-full overflow-hidden">
         {product.image ? (
-          <img src={product.image} alt={product.name} className="h-full w-full object-cover" />
+          <SmoothImage src={product.image} alt={product.name} className="h-full w-full object-cover" />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-[linear-gradient(180deg,#f3f7ff_0%,#e4edff_55%,#d7e4ff_100%)] text-center">
             <div className="px-6 text-slate-700">
@@ -217,7 +218,7 @@ function MainCard({
       <div className={cn('grid gap-0', compact ? 'lg:grid-cols-1' : 'xl:grid-cols-[0.92fr_1.08fr]')}>
         <div className={cn('relative overflow-hidden bg-slate-100', compact ? 'h-72 sm:h-80' : 'h-[28rem] xl:h-full')}>
           {product.image ? (
-            <img src={product.image} alt={product.name} className="h-full w-full object-cover" />
+            <SmoothImage src={product.image} alt={product.name} className="h-full w-full object-cover" />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-[linear-gradient(180deg,#f3f7ff_0%,#e4edff_55%,#d7e4ff_100%)] text-center">
               <div className="px-6 text-slate-700">

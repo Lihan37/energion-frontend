@@ -1,20 +1,41 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 
 import scooty from '../../assets/scooty.png'
 
-const INTRO_DURATION_MS = 4800
+const INTRO_DURATION_MS = 3200
+const INTRO_SEEN_KEY = 'energion:intro-seen'
+
+function hasSeenIntro() {
+  if (typeof window === 'undefined') return true
+  try {
+    return window.sessionStorage.getItem(INTRO_SEEN_KEY) === '1'
+  } catch {
+    return false
+  }
+}
 
 export function SiteIntroLoader() {
-  const [isVisible, setIsVisible] = useState(true)
+  const prefersReducedMotion = useReducedMotion()
+  // Only play the branded intro once per browsing session, and never for
+  // visitors who prefer reduced motion — so navigation always feels instant.
+  const [isVisible, setIsVisible] = useState(() => !hasSeenIntro() && !prefersReducedMotion)
 
   useEffect(() => {
+    if (!isVisible) return
+
+    try {
+      window.sessionStorage.setItem(INTRO_SEEN_KEY, '1')
+    } catch {
+      /* ignore storage errors (private mode, etc.) */
+    }
+
     const timeout = window.setTimeout(() => {
       setIsVisible(false)
     }, INTRO_DURATION_MS)
 
     return () => window.clearTimeout(timeout)
-  }, [])
+  }, [isVisible])
 
   return (
     <AnimatePresence>
@@ -32,7 +53,7 @@ export function SiteIntroLoader() {
             className="absolute left-0 top-1/2 flex -translate-y-1/2 items-end"
             initial={{ x: '-45vw' }}
             animate={{ x: '112vw' }}
-            transition={{ duration: 4.65, ease: [0.45, 0, 0.2, 1] }}
+            transition={{ duration: 3.1, ease: [0.45, 0, 0.2, 1] }}
           >
             <motion.div
               className="absolute bottom-1 left-[15%] h-5 w-[72%] rounded-full bg-slate-950/18 blur-md"
@@ -62,7 +83,7 @@ export function SiteIntroLoader() {
                 className="h-full rounded-full bg-brand-gradient"
                 initial={{ x: '-100%' }}
                 animate={{ x: '0%' }}
-                transition={{ duration: 4.65, ease: [0.45, 0, 0.2, 1] }}
+                transition={{ duration: 3.1, ease: [0.45, 0, 0.2, 1] }}
               />
             </div>
           </motion.div>
