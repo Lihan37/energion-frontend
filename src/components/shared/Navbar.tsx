@@ -150,7 +150,7 @@ export function Navbar() {
                       className={({ isActive }) =>
                         cn(
                           'rounded-2xl px-4 py-3 text-sm font-semibold text-slate-700 transition',
-                          isActive && 'bg-[rgba(49,94,230,0.08)] text-[var(--brand-start)]',
+                          isActive && 'bg-[rgba(49,94,230,0.08)] text-(--brand-start)',
                         )
                       }
                       onClick={() => setOpen(false)}
