@@ -50,7 +50,7 @@ export function Navbar() {
           <img
             src={logo}
             alt="Energion E-Mobility"
-            className="h-11 w-auto object-contain"
+            className="h-14 w-auto object-contain sm:h-16"
           />
         </Link>
 
@@ -131,7 +131,7 @@ export function Navbar() {
                   <img
                     src={logo}
                     alt="Energion E-Mobility"
-                    className="h-11 w-auto object-contain"
+                    className="h-14 w-auto object-contain sm:h-16"
                   />
                 </Link>
 
