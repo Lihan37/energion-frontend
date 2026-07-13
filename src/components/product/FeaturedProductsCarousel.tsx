@@ -16,6 +16,22 @@ interface FeaturedProductsCarouselProps {
 
 const AUTO_SLIDE_MS = 5600
 
+const smoothEase = [0.16, 1, 0.3, 1] as const
+
+// Continuous cross-slide: the outgoing card glides one way while the incoming
+// card glides in from the other, both eased on the site's signature curve.
+const slideVariants = {
+  enter: (dir: number) => ({ x: dir > 0 ? 220 : -220, opacity: 0, scale: 0.94 }),
+  center: { x: 0, opacity: 1, scale: 1 },
+  exit: (dir: number) => ({ x: dir > 0 ? -220 : 220, opacity: 0, scale: 0.94 }),
+}
+
+const slideTransition = {
+  x: { type: 'spring', stiffness: 260, damping: 32, mass: 0.9 },
+  opacity: { duration: 0.45, ease: smoothEase },
+  scale: { duration: 0.55, ease: smoothEase },
+} as const
+
 export function FeaturedProductsCarousel({ products, onOpen }: FeaturedProductsCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0)
   const [direction, setDirection] = useState<1 | -1>(1)
@@ -65,13 +81,15 @@ export function FeaturedProductsCarousel({ products, onOpen }: FeaturedProductsC
           />
 
           <div className="absolute inset-x-[15%] z-20">
-            <AnimatePresence mode="wait" initial={false}>
+            <AnimatePresence mode="popLayout" initial={false} custom={direction}>
               <motion.div
                 key={activeProduct.id}
-                initial={{ x: direction > 0 ? 140 : -140, opacity: 0.4, scale: 0.96 }}
-                animate={{ x: 0, opacity: 1, scale: 1 }}
-                exit={{ x: direction > 0 ? -140 : 140, opacity: 0.4, scale: 0.96 }}
-                transition={{ duration: 0.42, ease: 'easeInOut' }}
+                custom={direction}
+                variants={slideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={slideTransition}
               >
                 <MainCard product={activeProduct} onOpen={() => onOpen(activeProduct)} />
               </motion.div>
@@ -104,13 +122,17 @@ export function FeaturedProductsCarousel({ products, onOpen }: FeaturedProductsC
         </div>
 
         <div className="lg:hidden">
-          <AnimatePresence mode="wait" initial={false}>
+          <AnimatePresence mode="popLayout" initial={false} custom={direction}>
             <motion.div
               key={activeProduct.id}
-              initial={{ x: direction > 0 ? 60 : -60, opacity: 0.55 }}
+              custom={direction}
+              initial={{ x: direction > 0 ? 120 : -120, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              exit={{ x: direction > 0 ? -60 : 60, opacity: 0.55 }}
-              transition={{ duration: 0.35, ease: 'easeInOut' }}
+              exit={{ x: direction > 0 ? -120 : 120, opacity: 0 }}
+              transition={{
+                x: { type: 'spring', stiffness: 280, damping: 32, mass: 0.9 },
+                opacity: { duration: 0.35, ease: smoothEase },
+              }}
             >
               <MainCard product={activeProduct} onOpen={() => onOpen(activeProduct)} compact />
             </motion.div>
@@ -178,7 +200,7 @@ function PreviewCard({
         opacity: 0.45,
         scale: 0.9,
       }}
-      transition={{ duration: 0.35, ease: 'easeInOut' }}
+      transition={{ duration: 0.55, ease: smoothEase }}
     >
       <div className="relative h-full overflow-hidden">
         {product.image ? (
