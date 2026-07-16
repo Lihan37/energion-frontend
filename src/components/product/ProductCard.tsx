@@ -13,15 +13,15 @@ interface ProductCardProps {
 export function ProductCard({ product, onOpen }: ProductCardProps) {
   return (
     <article className="group surface-card card-lift overflow-hidden rounded-[2rem] border border-[rgba(16,27,45,0.08)] shadow-[var(--shadow-card)]">
-      <div className="relative h-64 overflow-hidden">
+      <div className="relative flex h-64 items-center justify-center overflow-hidden bg-[linear-gradient(180deg,#f5f8ff_0%,#e7efff_38%,#cfdcf7_100%)]">
         {product.image ? (
           <SmoothImage
             src={product.image}
             alt={product.name}
-            className="h-full w-full object-cover transition duration-[600ms] ease-out group-hover:scale-[1.06]"
+            className="h-full w-full object-contain p-4 transition duration-[600ms] ease-out group-hover:scale-[1.03]"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-[linear-gradient(180deg,#e8eefc_0%,#dbe7ff_36%,#10172d_100%)] text-center">
+          <div className="flex h-full w-full items-center justify-center text-center">
             <div className="px-6 text-slate-700">
               <ImageOff className="mx-auto size-8 text-[var(--brand-start)]/70" />
               <div className="mt-3 text-sm font-semibold">{product.name}</div>
