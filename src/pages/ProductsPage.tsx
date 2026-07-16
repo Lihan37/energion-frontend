@@ -95,7 +95,7 @@ export function ProductsPage() {
         ) : filteredProducts.length ? (
           <motion.div
             key={category}
-            className="grid gap-6 lg:grid-cols-2"
+            className="grid gap-5 md:grid-cols-2 xl:grid-cols-3"
             initial="hidden"
             animate="show"
             variants={{ hidden: {}, show: { transition: { staggerChildren: 0.07 } } }}
@@ -103,6 +103,7 @@ export function ProductsPage() {
             {filteredProducts.map((product) => (
               <motion.div
                 key={product.id}
+                className="h-full"
                 variants={{
                   hidden: { opacity: 0, y: 20 },
                   show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
