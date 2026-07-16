@@ -20,11 +20,16 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
       <div className="space-y-8 p-6 lg:p-8">
         <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="space-y-5">
-            <div className="overflow-hidden rounded-[1.75rem]">
+            <div className="flex h-[300px] items-center justify-center overflow-hidden rounded-[1.75rem] border border-[rgba(16,27,45,0.06)] bg-[linear-gradient(180deg,#f8faff_0%,#edf2fc_58%,#dce5f5_100%)] sm:h-[360px]">
               {product.image ? (
-                <SmoothImage src={product.image} alt={product.name} loading="eager" className="h-[360px] w-full object-cover" />
+                <SmoothImage
+                  src={product.image}
+                  alt={product.name}
+                  loading="eager"
+                  className="h-full w-full object-contain p-4 sm:p-5"
+                />
               ) : (
-                <div className="flex h-[360px] w-full items-center justify-center bg-slate-100 text-center">
+                <div className="flex h-full w-full items-center justify-center text-center">
                   <div className="text-slate-500">
                     <ImageOff className="mx-auto size-10 text-slate-400" />
                     <div className="mt-4 text-base font-medium">Product image will be added soon</div>
