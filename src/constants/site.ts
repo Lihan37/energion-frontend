@@ -1,9 +1,9 @@
 export const siteConfig = {
   name: 'Energion E-Mobility',
   tagline: 'Premium electric bikes for fast, clean urban motion.',
-  email: 'hello@energion-emobility.com',
-  phone: '+880 1700-000000',
-  address: 'Sector 7, Uttara, Dhaka 1230',
+  email: 'info@energion-emobility.com',
+  phone: '01806442201',
+  address: 'Plot-85, Road-133, Gulshan 1, Dhaka-1212',
 }
 
 export const navItems = [
