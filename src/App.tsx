@@ -1,7 +1,7 @@
 import { AppProviders } from './app/providers'
 import { MaintenancePage } from './pages/MaintenancePage'
 
-const SITE_UNDER_MAINTENANCE = true
+const SITE_UNDER_MAINTENANCE = false
 
 function App() {
   if (SITE_UNDER_MAINTENANCE) {
