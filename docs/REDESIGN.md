@@ -10,7 +10,7 @@ was introduced. The subsequent authorized catalog import extends the existing
 backend and database; see [BIKE-IMPORT.md](BIKE-IMPORT.md).
 
 Work began on a clean `main` branch. The redesign and supplied-image import are
-being released to the existing GitHub repositories, Netlify site and Railway service.
+released to the existing GitHub repositories, Netlify site and Railway service.
 
 ## Pages and components
 
@@ -165,7 +165,7 @@ Automated WCAG A/AA checks reported zero violations on the seven major public
 pages and representative product modal. Runtime checks reported no uncaught
 page exceptions on the responsive route matrix.
 
-A separate read-only Chrome check against the real backend loaded all **six**
+A separate initial read-only Chrome check against the real backend loaded all **six**
 catalog models, found **no visible prices**, and recorded **no page exceptions**.
 The network sandbox blocked the initial browser attempt; running that check with
 approved network access succeeded. Product image hosting still has the disabled
@@ -175,3 +175,7 @@ CRUD writes were not exercised with real credentials or real mutations.
 The subsequent authorized release configures backend-only Cloudinary credentials,
 imports the supplied models with a database backup, and deploys both existing
 services. Server-delivered enquiries still require an actual backend workflow.
+
+Post-deployment Chrome verification loaded all **nine public models** and decoded
+all **twenty supplied gallery images** on the live site. Desktop/mobile layouts,
+price suppression and direct products-route reload passed without page exceptions.

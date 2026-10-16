@@ -34,6 +34,10 @@ frontend repository.
 
 ## Checks completed
 
+- Frontend release `f63027e` pushed to `main`; Netlify production deployment `6ad2164667612f31509fc0bb` completed.
+- Railway production deployment `f305272c-14bc-430d-9712-c99e85fcbcd4` completed successfully.
+- Live Chrome verification at `https://energion-emobility.com`: desktop 1440px and mobile 390px, all **20 gallery images** decoded, no horizontal overflow, no visible prices, no page exceptions, products-route reload passed.
+- Read-only database verification: **12 records retained**, exactly Jaguar, Venturer and original Xplorer hidden.
 - Production database import completed after saving a full product backup.
 - Live Railway API verified: **9 public models, 20 gallery images**, health `ok`.
 - Jaguar, Venturer and original Xplorer are excluded from the public API, not deleted.
@@ -43,6 +47,7 @@ frontend repository.
 - Backend tests: **4/4** pass.
 - Real supplied-image local preview: **9 models, 20/20 gallery images** decode.
 - Screenshots: `artifacts/redesign/real-photos-{home,catalog}-{1440,390}.png`.
+- Production screenshots: `artifacts/redesign/live-{home,catalog}-{1440,390}.png`.
 - GitHub push access and the existing Railway/Netlify deployment targets have been verified.
 
 The local photo preview mocks only the catalog response to point at the user's
