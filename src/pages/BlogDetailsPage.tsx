@@ -1,94 +1,80 @@
 import { useQuery } from '@tanstack/react-query'
 import { ArrowLeft } from 'lucide-react'
+import { useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
-
-import { Badge } from '../components/ui/Badge'
-import { Button } from '../components/ui/Button'
 import { Container } from '../components/ui/Container'
-import { EmptyState } from '../components/ui/EmptyState'
-import { LoadingState } from '../components/ui/LoadingState'
+import { CatalogState } from '../components/ui/CatalogState'
 import { SmoothImage } from '../components/ui/SmoothImage'
 import { getBlogBySlug } from '../services/blogService'
 
 export function BlogDetailsPage() {
   const { slug = '' } = useParams()
-  const blogQuery = useQuery({
-    queryKey: ['blog', slug],
-    queryFn: () => getBlogBySlug(slug),
-  })
-
-  if (blogQuery.isLoading) {
+  const query = useQuery({ queryKey: ['blog', slug], queryFn: () => getBlogBySlug(slug) })
+  useEffect(() => {
+    if (!query.data) return
+    document.title = `${query.data.title} | Energion journal`
+    const description = document.querySelector<HTMLMetaElement>('meta[name="description"]')
+    if (description) description.content = query.data.excerpt
+    const ogTitle = document.querySelector<HTMLMetaElement>('meta[property="og:title"]')
+    if (ogTitle) ogTitle.content = document.title
+  }, [query.data])
+  if (query.isPending || query.isError)
     return (
-      <div className="py-16">
-        <Container>
-          <LoadingState label="Loading article..." />
-        </Container>
-      </div>
-    )
-  }
-
-  if (!blogQuery.data) {
-    return (
-      <div className="py-16">
-        <Container>
-          <EmptyState
-            title="Article not found."
-            description="This route is ready for backend-managed blog content, but the requested article does not exist in the current data set."
-          />
-        </Container>
-      </div>
-    )
-  }
-
-  const blog = blogQuery.data
-
-  return (
-    <div className="py-16">
-      <Container className="max-w-5xl space-y-8">
-        <Link to="/blog" className="inline-flex">
-          <Button variant="secondary">
-            <ArrowLeft className="mr-2 size-4" />
-            Back to blog
-          </Button>
-        </Link>
-
-        <article className="surface-card overflow-hidden rounded-[2.5rem] border border-[rgba(16,27,45,0.08)] shadow-[var(--shadow-soft)]">
-          <div className="relative h-[340px] overflow-hidden sm:h-[460px]">
-            <SmoothImage src={blog.coverImage} alt={blog.title} loading="eager" className="h-full w-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/10 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10">
-              <Badge tone="gradient">{blog.category}</Badge>
-              <h1 className="mt-5 max-w-3xl font-display text-4xl font-semibold tracking-tight text-white sm:text-5xl">
-                {blog.title}
-              </h1>
-              <div className="mt-4 flex flex-wrap gap-4 text-sm text-slate-200">
-                <span>{blog.author}</span>
-                <span>{new Date(blog.publishedAt).toLocaleDateString()}</span>
-                <span>{blog.readTime}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="prose-rich space-y-10 px-6 py-8 sm:px-10 sm:py-10">
-            <p className="text-lg leading-8">{blog.excerpt}</p>
-            {blog.content.map((section) => (
-              <section key={section.heading} className="space-y-4">
-                <h2 className="text-2xl font-semibold">{section.heading}</h2>
-                {section.paragraphs.map((paragraph) => (
-                  <p key={paragraph}>{paragraph}</p>
-                ))}
-                {section.bullets ? (
-                  <ul>
-                    {section.bullets.map((bullet) => (
-                      <li key={bullet}>{bullet}</li>
-                    ))}
-                  </ul>
-                ) : null}
-              </section>
-            ))}
-          </div>
-        </article>
+      <Container className="py-16">
+        <CatalogState error={query.isError} retry={() => void query.refetch()} />
       </Container>
-    </div>
+    )
+  const blog = query.data
+  if (!blog)
+    return (
+      <Container className="py-16">
+        <div className="status-panel">
+          <h1 className="section-title">Story not found.</h1>
+          <Link to="/blog" className="text-link">
+            Back to the journal
+          </Link>
+        </div>
+      </Container>
+    )
+  return (
+    <Container>
+      <article className="article-layout pb-20">
+        <div className="page-intro">
+          <Link to="/blog" className="text-link mb-8">
+            <ArrowLeft size={15} /> The journal
+          </Link>
+          <div>
+            <span className="eyebrow">{blog.category}</span>
+          </div>
+          <h1 className="section-title my-5">{blog.title}</h1>
+          <p className="body-copy">{blog.excerpt}</p>
+          <div className="mt-5 flex flex-wrap gap-4 text-xs text-slate-500">
+            <span>{blog.author}</span>
+            <time dateTime={blog.publishedAt}>
+              {new Date(blog.publishedAt).toLocaleDateString('en-GB')}
+            </time>
+            <span>{blog.readTime}</span>
+          </div>
+        </div>
+        <SmoothImage src={blog.coverImage} alt="" loading="eager" className="article-cover" />
+        <div className="prose-rich space-y-10">
+          {blog.content.map((section) => (
+            <section key={section.heading} className="space-y-4">
+              <h2 className="text-4xl font-medium">{section.heading}</h2>
+              {section.paragraphs.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+              {section.bullets && (
+                <ul>
+                  {section.bullets.map((bullet) => (
+                    <li key={bullet}>{bullet}</li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          ))}
+        </div>
+      </article>
+    </Container>
   )
 }

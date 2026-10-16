@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+import { forwardRef, useId } from 'react'
 
 import { cn } from '../../lib/cn'
 
@@ -8,13 +8,22 @@ interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement
 }
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function Textarea(
-  { className, label, error, ...props },
+  { className, label, error, id, ...props },
   ref,
 ) {
+  const generatedId = useId()
+  const inputId = id ?? generatedId
   return (
-    <label className="flex flex-col gap-2">
-      {label ? <span className="text-sm font-semibold text-slate-800">{label}</span> : null}
+    <div className="flex flex-col gap-2">
+      {label ? (
+        <label htmlFor={inputId} className="text-sm font-semibold text-slate-800">
+          {label}
+        </label>
+      ) : null}
       <textarea
+        id={inputId}
+        aria-invalid={Boolean(error)}
+        aria-describedby={error ? `${inputId}-error` : undefined}
         ref={ref}
         className={cn(
           'min-h-32 rounded-3xl border border-[rgba(16,27,45,0.1)] bg-white/90 px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[rgba(49,94,230,0.38)] focus:ring-4 focus:ring-[rgba(49,94,230,0.1)]',
@@ -23,7 +32,11 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
         )}
         {...props}
       />
-      {error ? <span className="text-sm text-rose-500">{error}</span> : null}
-    </label>
+      {error ? (
+        <span id={`${inputId}-error`} className="text-sm text-rose-600">
+          {error}
+        </span>
+      ) : null}
+    </div>
   )
 })

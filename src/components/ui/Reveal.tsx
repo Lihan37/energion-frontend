@@ -20,12 +20,12 @@ export function Reveal({
   className,
   delay = 0,
   direction = 'up',
-  duration = 0.75,
+  duration = 0.6,
   once = true,
   amount = 0.24,
-  blur = true,
-  y = 42,
-  x = 72,
+  blur = false,
+  y = 24,
+  x = 24,
 }: RevealProps) {
   const prefersReducedMotion = useReducedMotion()
 

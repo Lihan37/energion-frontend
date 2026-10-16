@@ -1,338 +1,172 @@
-import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowRight, BatteryCharging, ChevronLeft, ChevronRight, Gauge, ImageOff, Timer } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { ArrowUpRight, ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { enquiryUrl, type PublicProduct } from '../../lib/productPresentation'
+import { SpecificationHighlights } from './SpecificationHighlights'
+import { VehicleImage } from './VehicleImage'
 
-import { cn } from '../../lib/cn'
-import type { Product } from '../../types/product'
-import { Badge } from '../ui/Badge'
-import { Button } from '../ui/Button'
-import { SmoothImage } from '../ui/SmoothImage'
-
-interface FeaturedProductsCarouselProps {
-  products: Product[]
-  onOpen: (product: Product) => void
+interface Props {
+  products: PublicProduct[]
+  onOpen: (product: PublicProduct) => void
 }
 
-const AUTO_SLIDE_MS = 5600
-
-const smoothEase = [0.16, 1, 0.3, 1] as const
-
-// Continuous cross-slide: the outgoing card glides one way while the incoming
-// card glides in from the other, both eased on the site's signature curve.
-const slideVariants = {
-  enter: (dir: number) => ({ x: dir > 0 ? 220 : -220, opacity: 0, scale: 0.94 }),
-  center: { x: 0, opacity: 1, scale: 1 },
-  exit: (dir: number) => ({ x: dir > 0 ? -220 : 220, opacity: 0, scale: 0.94 }),
-}
-
-const slideTransition = {
-  x: { type: 'spring', stiffness: 260, damping: 32, mass: 0.9 },
-  opacity: { duration: 0.45, ease: smoothEase },
-  scale: { duration: 0.55, ease: smoothEase },
-} as const
-
-export function FeaturedProductsCarousel({ products, onOpen }: FeaturedProductsCarouselProps) {
-  const [activeIndex, setActiveIndex] = useState(0)
-  const [direction, setDirection] = useState<1 | -1>(1)
-  const safeProducts = useMemo(() => products.slice(0, 3), [products])
+export function FeaturedProductsCarousel({ products, onOpen }: Props) {
+  const [index, setIndex] = useState(0)
+  const [playing, setPlaying] = useState(true)
+  const [hovered, setHovered] = useState(false)
+  const [focused, setFocused] = useState(false)
+  const reduced = useReducedMotion()
+  const id = useId()
+  const touchStart = useRef<number | null>(null)
+  const tabsRef = useRef<HTMLDivElement>(null)
+  const activeIndex = index % Math.max(products.length, 1)
+  const product = products[activeIndex]
 
   useEffect(() => {
-    if (safeProducts.length <= 1) {
-      return
-    }
+    if (!playing || hovered || focused || reduced || products.length < 2) return
+    const timer = window.setInterval(() => {
+      if (!document.hidden) setIndex((value) => (value + 1) % products.length)
+    }, 6000)
+    return () => clearInterval(timer)
+  }, [playing, hovered, focused, reduced, products.length])
 
-    const interval = window.setInterval(() => {
-      setDirection(1)
-      setActiveIndex((current) => (current + 1) % safeProducts.length)
-    }, AUTO_SLIDE_MS)
+  useEffect(() => {
+    const container = tabsRef.current
+    const tab = container?.querySelector<HTMLElement>('[aria-selected="true"]')
+    if (!container || !tab) return
+    container.scrollTo({
+      left:
+        container.scrollLeft +
+        tab.getBoundingClientRect().left -
+        container.getBoundingClientRect().left -
+        container.clientWidth / 2 +
+        tab.clientWidth / 2,
+      behavior: reduced ? 'instant' : 'smooth',
+    })
+  }, [activeIndex, reduced])
 
-    return () => window.clearInterval(interval)
-  }, [safeProducts.length])
-
-  if (!safeProducts.length) {
-    return null
+  function go(next: number) {
+    setIndex((next + products.length) % products.length)
   }
-
-  const previousIndex = (activeIndex - 1 + safeProducts.length) % safeProducts.length
-  const nextIndex = (activeIndex + 1) % safeProducts.length
-
-  function goTo(index: number) {
-    const normalizedIndex = (index + safeProducts.length) % safeProducts.length
-    if (normalizedIndex === activeIndex) return
-
-    const isPrevious = normalizedIndex === previousIndex
-    setDirection(isPrevious ? -1 : 1)
-    setActiveIndex(normalizedIndex)
-  }
-
-  const activeProduct = safeProducts[activeIndex]
-  const previousProduct = safeProducts[previousIndex]
-  const nextProduct = safeProducts[nextIndex]
-
+  if (!product) return null
   return (
-    <div className="space-y-5">
-      <div className="relative">
-        <div className="relative hidden h-148 items-center justify-center overflow-hidden lg:flex">
-          <PreviewCard
-            product={previousProduct}
-            position="left"
-            onClick={() => goTo(previousIndex)}
-          />
-
-          <div className="absolute inset-x-[15%] z-20">
-            <AnimatePresence mode="popLayout" initial={false} custom={direction}>
-              <motion.div
-                key={activeProduct.id}
-                custom={direction}
-                variants={slideVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={slideTransition}
-              >
-                <MainCard product={activeProduct} onOpen={() => onOpen(activeProduct)} />
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
-          <PreviewCard
-            product={nextProduct}
-            position="right"
-            onClick={() => goTo(nextIndex)}
-          />
-
+    <section
+      className="model-showcase"
+      aria-label="Featured electric vehicles"
+      aria-roledescription="carousel"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocusCapture={() => setFocused(true)}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false)
+      }}
+    >
+      <div ref={tabsRef} className="model-tabs" role="tablist" aria-label="Select a model">
+        {products.map((item, position) => (
           <button
-            type="button"
-            aria-label="Previous featured bike"
-            onClick={() => goTo(activeIndex - 1)}
-            className="absolute left-2 top-1/2 z-30 inline-flex -translate-y-1/2 rounded-full border border-[rgba(16,27,45,0.08)] bg-white/95 p-4 text-slate-900 shadow-[0_12px_24px_rgba(8,17,31,0.12)] transition hover:bg-white"
+            role="tab"
+            id={`${id}-tab-${position}`}
+            aria-controls={`${id}-panel`}
+            aria-selected={position === activeIndex}
+            tabIndex={position === activeIndex ? 0 : -1}
+            key={item.id}
+            onClick={() => go(position)}
+            onKeyDown={(event) => {
+              let next = position
+              if (event.key === 'ArrowRight') next = (position + 1) % products.length
+              else if (event.key === 'ArrowLeft')
+                next = (position - 1 + products.length) % products.length
+              else if (event.key === 'Home') next = 0
+              else if (event.key === 'End') next = products.length - 1
+              else return
+              event.preventDefault()
+              go(next)
+              document.getElementById(`${id}-tab-${next}`)?.focus()
+            }}
           >
-            <ChevronLeft className="size-5" />
+            {item.name}
           </button>
-
-          <button
-            type="button"
-            aria-label="Next featured bike"
-            onClick={() => goTo(activeIndex + 1)}
-            className="absolute right-2 top-1/2 z-30 inline-flex -translate-y-1/2 rounded-full border border-[rgba(16,27,45,0.08)] bg-white/95 p-4 text-slate-900 shadow-[0_12px_24px_rgba(8,17,31,0.12)] transition hover:bg-white"
-          >
-            <ChevronRight className="size-5" />
-          </button>
-        </div>
-
-        <div className="lg:hidden">
-          <AnimatePresence mode="popLayout" initial={false} custom={direction}>
-            <motion.div
-              key={activeProduct.id}
-              custom={direction}
-              initial={{ x: direction > 0 ? 120 : -120, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: direction > 0 ? -120 : 120, opacity: 0 }}
-              transition={{
-                x: { type: 'spring', stiffness: 280, damping: 32, mass: 0.9 },
-                opacity: { duration: 0.35, ease: smoothEase },
-              }}
-            >
-              <MainCard product={activeProduct} onOpen={() => onOpen(activeProduct)} compact />
-            </motion.div>
-          </AnimatePresence>
-
-          <div className="mt-4 flex items-center justify-center gap-3">
-            <button
-              type="button"
-              aria-label="Previous featured bike"
-              onClick={() => goTo(activeIndex - 1)}
-              className="inline-flex rounded-full border border-[rgba(16,27,45,0.08)] bg-white p-3 text-slate-900 shadow-[0_10px_20px_rgba(8,17,31,0.1)]"
-            >
-              <ChevronLeft className="size-4" />
-            </button>
-            <button
-              type="button"
-              aria-label="Next featured bike"
-              onClick={() => goTo(activeIndex + 1)}
-              className="inline-flex rounded-full border border-[rgba(16,27,45,0.08)] bg-white p-3 text-slate-900 shadow-[0_10px_20px_rgba(8,17,31,0.1)]"
-            >
-              <ChevronRight className="size-4" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex items-center justify-center gap-2">
-        {safeProducts.map((product, index) => (
-          <button
-            key={product.id}
-            type="button"
-            aria-label={`Show ${product.name}`}
-            onClick={() => goTo(index)}
-            className={cn(
-              'h-2.5 rounded-full transition-all duration-200',
-              index === activeIndex ? 'w-10 bg-brand-gradient' : 'w-2.5 bg-slate-300 hover:bg-slate-400',
-            )}
-          />
         ))}
       </div>
-    </div>
-  )
-}
-
-function PreviewCard({
-  product,
-  position,
-  onClick,
-}: {
-  product: Product
-  position: 'left' | 'right'
-  onClick: () => void
-}) {
-  return (
-    <motion.button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        'absolute top-10 z-10 h-116 w-[24rem] overflow-hidden rounded-4xl border border-[rgba(16,27,45,0.08)] bg-white/80 text-left shadow-[0_18px_42px_rgba(8,17,31,0.08)]',
-        position === 'left' ? 'left-0' : 'right-0',
-      )}
-      initial={false}
-      animate={{
-        x: position === 'left' ? 24 : -24,
-        opacity: 0.45,
-        scale: 0.9,
-      }}
-      transition={{ duration: 0.55, ease: smoothEase }}
-    >
-      <div className="relative h-full overflow-hidden">
-        {product.image ? (
-          <SmoothImage src={product.image} alt={product.name} className="h-full w-full object-cover" />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-[linear-gradient(180deg,#f3f7ff_0%,#e4edff_55%,#d7e4ff_100%)] text-center">
-            <div className="px-6 text-slate-700">
-              <ImageOff className="mx-auto size-8 text-(--brand-start)/70" />
-              <div className="mt-3 text-sm font-semibold">{product.name}</div>
+      <div
+        id={`${id}-panel`}
+        role="tabpanel"
+        aria-labelledby={`${id}-tab-${activeIndex}`}
+        onTouchStart={(event) => {
+          touchStart.current = event.touches[0].clientX
+        }}
+        onTouchEnd={(event) => {
+          if (touchStart.current !== null) {
+            const distance = touchStart.current - event.changedTouches[0].clientX
+            if (Math.abs(distance) > 50) go(activeIndex + (distance > 0 ? 1 : -1))
+            touchStart.current = null
+          }
+        }}
+      >
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={product.id}
+            className="model-stage"
+            initial={{ opacity: 0, x: reduced ? 0 : 24 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: reduced ? 0 : -24 }}
+            transition={{ duration: reduced ? 0 : 0.28, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div className="model-image">
+              <span className="model-watermark" aria-hidden="true">
+                {product.name}
+              </span>
+              <VehicleImage src={product.image} name={product.name} />
             </div>
-          </div>
-        )}
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.12),rgba(15,23,42,0.5))]" />
-        <div className="absolute left-5 top-5 flex flex-wrap gap-2">
-          <Badge tone="gradient">{product.category}</Badge>
-        </div>
-        <div className="absolute inset-x-0 bottom-0 bg-[linear-gradient(180deg,rgba(15,23,42,0),rgba(15,23,42,0.82))] px-5 pb-5 pt-14">
-          <div className="font-display text-2xl font-semibold text-white">{product.name}</div>
-          <div className="mt-2 line-clamp-2 text-sm leading-7 text-slate-200">{product.shortDescription}</div>
-        </div>
-      </div>
-    </motion.button>
-  )
-}
-
-function MainCard({
-  product,
-  onOpen,
-  compact = false,
-}: {
-  product: Product
-  onOpen: () => void
-  compact?: boolean
-}) {
-  return (
-    <article className="overflow-hidden rounded-[2.35rem] border border-[rgba(16,27,45,0.08)] bg-white shadow-[0_28px_70px_rgba(8,17,31,0.14)]">
-      <div className={cn('grid gap-0', compact ? 'lg:grid-cols-1' : 'xl:grid-cols-[0.92fr_1.08fr]')}>
-        <div className={cn('relative overflow-hidden bg-slate-100', compact ? 'h-72 sm:h-80' : 'h-112h-full')}>
-          {product.image ? (
-            <SmoothImage src={product.image} alt={product.name} className="h-full w-full object-cover" />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center bg-[linear-gradient(180deg,#f3f7ff_0%,#e4edff_55%,#d7e4ff_100%)] text-center">
-              <div className="px-6 text-slate-700">
-                <ImageOff className="mx-auto size-10 text-(--brand-start)/70" />
-                <div className="mt-4 text-lg font-semibold">{product.name}</div>
-                <div className="mt-2 text-xs uppercase tracking-[0.24em] text-slate-500">Visual coming soon</div>
+            <div className="model-copy">
+              <span className="eyebrow">{product.category} / Electric mobility</span>
+              <h3>{product.name}</h3>
+              <p className="body-copy">{product.shortDescription}</p>
+              <SpecificationHighlights product={product} />
+              <div className="model-actions">
+                <button className="cta" onClick={() => onOpen(product)}>
+                  Explore model <ArrowUpRight size={17} />
+                </button>
+                <Link to={enquiryUrl(product)} className="cta cta-outline">
+                  Enquire now
+                </Link>
               </div>
             </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+      <div className="model-controls">
+        <span>
+          {String(activeIndex + 1).padStart(2, '0')} / {String(products.length).padStart(2, '0')}{' '}
+          &nbsp; YOUR RIDE. YOUR CHOICE.
+        </span>
+        <div>
+          {!reduced && products.length > 1 && (
+            <button
+              className="icon-button"
+              aria-label={playing ? 'Pause model slideshow' : 'Play model slideshow'}
+              onClick={() => setPlaying((value) => !value)}
+            >
+              {playing ? <Pause size={15} /> : <Play size={15} />}
+            </button>
           )}
-          <div className="absolute left-5 top-5 flex flex-wrap gap-2">
-            <Badge tone="gradient">{product.category}</Badge>
-            {product.tag ? <Badge>{product.tag}</Badge> : null}
-          </div>
-        </div>
-
-        <div className="flex min-h-full flex-col bg-[linear-gradient(180deg,#ffffff_0%,#fbfcff_100%)] p-5 sm:p-6">
-          <div className="min-w-0 max-w-[24rem]">
-            <h3 className="font-display text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
-              {product.name}
-            </h3>
-            <p className="mt-3 min-h-30 max-w-92 text-sm leading-8 text-slate-600 sm:text-base">
-              {product.shortDescription}
-            </p>
-            <div className="mt-4 inline-flex rounded-[1.9rem] bg-[linear-gradient(180deg,rgba(245,247,255,0.95),rgba(236,242,255,0.95))] px-5 py-4 text-left shadow-[inset_0_0_0_1px_rgba(49,94,230,0.06)]">
-              <div>
-                <div className="text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-500">Starting</div>
-                <div className="mt-2 text-2xl font-bold text-(--brand-start) sm:text-[2rem]">
-                  Tk {product.price.toLocaleString()}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-4 grid grid-cols-2 gap-3">
-            <Metric icon={BatteryCharging} label="Battery" value={product.battery} />
-            <Metric icon={Gauge} label="Range" value={product.range} />
-            <Metric icon={Gauge} label="Top Speed" value={product.topSpeed} />
-            <Metric icon={Timer} label="Charge" value={product.chargingTime} />
-          </div>
-
-          <div className="mt-auto pt-4">
-            <div className="flex flex-col gap-3 sm:flex-row">
-            <Button className="sm:flex-1" onClick={onOpen}>
-              Details
-              <ArrowRight className="ml-2 size-4" />
-            </Button>
-            <Link to="/products" className="sm:flex-1">
-              <Button variant="secondary" fullWidth>
-                View all bikes
-              </Button>
-            </Link>
-            </div>
-          </div>
+          <button
+            className="icon-button"
+            aria-label="Previous model"
+            onClick={() => go(activeIndex - 1)}
+          >
+            <ChevronLeft size={18} />
+          </button>
+          <button
+            className="icon-button"
+            aria-label="Next model"
+            onClick={() => go(activeIndex + 1)}
+          >
+            <ChevronRight size={18} />
+          </button>
         </div>
       </div>
-    </article>
+    </section>
   )
-}
-
-function Metric({
-  icon: Icon,
-  label,
-  value,
-}: {
-  icon: typeof BatteryCharging
-  label: string
-  value: string
-}) {
-  return (
-    <div className="flex min-h-20 items-start gap-2 rounded-[1.25rem] border border-[rgba(16,27,45,0.06)] bg-slate-50/85 p-3 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.55)] sm:min-h-21 sm:gap-3 sm:rounded-[1.4rem] sm:p-4">
-      <div className="mt-0.5 rounded-xl bg-[rgba(49,94,230,0.08)] p-2 text-(--brand-start)">
-        <Icon className="size-3.5 sm:size-4" />
-      </div>
-      <div className="min-w-0">
-        <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-500 sm:text-[11px] sm:tracking-[0.2em]">{label}</div>
-        <div
-          className="mt-1.5 line-clamp-1 wrap-break-word text-sm font-semibold leading-5 text-slate-900 sm:mt-2 sm:leading-6"
-          title={value}
-        >
-          {getCompactMetricValue(label, value)}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function getCompactMetricValue(label: string, value: string) {
-  if (label !== 'Battery') {
-    return value
-  }
-
-  return value
-    .replace('Portable Lithium-ion', 'Portable Li-ion')
-    .replace('Lithium-ion', 'Li-ion')
 }

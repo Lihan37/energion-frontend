@@ -15,8 +15,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   const variants = {
-    primary:
-      'bg-brand-gradient text-white shadow-[0_14px_30px_rgba(49,94,230,0.25)] hover:opacity-95 hover:shadow-[0_18px_38px_rgba(49,94,230,0.32)]',
+    primary: 'bg-brand-gradient text-ink-950 hover:brightness-95',
     secondary:
       'border border-[rgba(16,27,45,0.1)] bg-white/80 text-slate-900 hover:bg-white hover:shadow-[0_10px_24px_rgba(8,17,31,0.08)]',
     ghost:
@@ -26,7 +25,7 @@ export function Button({
   return (
     <button
       className={cn(
-        'inline-flex cursor-pointer items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition duration-200 ease-out active:scale-[0.97] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-start)] disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100',
+        'inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-md px-6 py-3 text-sm font-semibold transition duration-200 ease-out active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand-start)] disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100',
         variants[variant],
         fullWidth && 'w-full',
         className,

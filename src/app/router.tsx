@@ -3,9 +3,7 @@ import { createBrowserRouter } from 'react-router-dom'
 import { ProtectedAdminRoute } from '../components/auth/ProtectedAdminRoute'
 import { MainLayout } from '../layouts/MainLayout'
 import { AdminLayout } from '../layouts/AdminLayout'
-import { AdminDashboardPage } from '../pages/admin/AdminDashboardPage'
 import { AdminIndexRedirect } from '../pages/admin/AdminIndexRedirect'
-import { AdminProductsPage } from '../pages/admin/AdminProductsPage'
 
 export const router = createBrowserRouter([
   {
@@ -72,19 +70,33 @@ export const router = createBrowserRouter([
       },
       {
         path: 'dashboard',
-        element: (
-          <ProtectedAdminRoute>
-            <AdminDashboardPage />
-          </ProtectedAdminRoute>
-        ),
+        lazy: async () => {
+          const { AdminDashboardPage } = await import('../pages/admin/AdminDashboardPage')
+          return {
+            Component: function AdminDashboardRoute() {
+              return (
+                <ProtectedAdminRoute>
+                  <AdminDashboardPage />
+                </ProtectedAdminRoute>
+              )
+            },
+          }
+        },
       },
       {
         path: 'products',
-        element: (
-          <ProtectedAdminRoute>
-            <AdminProductsPage />
-          </ProtectedAdminRoute>
-        ),
+        lazy: async () => {
+          const { AdminProductsPage } = await import('../pages/admin/AdminProductsPage')
+          return {
+            Component: function AdminProductsRoute() {
+              return (
+                <ProtectedAdminRoute>
+                  <AdminProductsPage />
+                </ProtectedAdminRoute>
+              )
+            },
+          }
+        },
       },
     ],
   },

@@ -1,106 +1,159 @@
 import { useMutation } from '@tanstack/react-query'
-import { Clock3, Mail, MapPin, Phone } from 'lucide-react'
+import { ArrowUpRight, Phone } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-
+import { useSearchParams } from 'react-router-dom'
 import { Button } from '../components/ui/Button'
 import { Container } from '../components/ui/Container'
 import { Input } from '../components/ui/Input'
-import { SectionHeading } from '../components/ui/SectionHeading'
 import { Textarea } from '../components/ui/Textarea'
 import { siteConfig } from '../constants/site'
 import { submitContactMessage } from '../services/contactService'
 
-const contactSchema = z.object({
-  name: z.string().min(2, 'Please enter your name'),
+const schema = z.object({
+  name: z.string().trim().min(2, 'Please enter your name'),
   email: z.email('Enter a valid email address'),
-  phone: z.string().min(8, 'Enter a valid phone number'),
-  message: z.string().min(10, 'Tell us a bit more about your request'),
+  phone: z.string().regex(/^[+\d\s()-]{8,20}$/, 'Enter a valid phone number'),
+  model: z.string().max(100).optional(),
+  message: z.string().trim().min(10, 'Tell us a bit more about your request'),
 })
-
-type ContactFormValues = z.infer<typeof contactSchema>
-
-const infoCards = [
-  { icon: Phone, label: 'Phone', value: siteConfig.phone },
-  { icon: Mail, label: 'Email', value: siteConfig.email },
-  { icon: MapPin, label: 'Address', value: siteConfig.address },
-  { icon: Clock3, label: 'Hours', value: 'Saturday - Thursday, 10:00 AM - 8:00 PM' },
-]
+type Values = z.infer<typeof schema>
 
 export function ContactPage() {
+  const [params] = useSearchParams()
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
-  } = useForm<ContactFormValues>({
-    resolver: zodResolver(contactSchema),
-    defaultValues: {
+  } = useForm<Values>({
+    resolver: zodResolver(schema),
+    values: {
       name: '',
       email: '',
       phone: '',
+      model: params.get('model')?.slice(0, 100) ?? '',
       message: '',
     },
   })
-
-  const mutation = useMutation({
-    mutationFn: submitContactMessage,
-    onSuccess: () => reset(),
-  })
-
+  const mutation = useMutation({ mutationFn: submitContactMessage })
   return (
-    <div className="py-16">
-      <Container className="space-y-10">
-        <SectionHeading
-          eyebrow="Contact"
-          title="Talk to Energion about products, test rides, dealership, or fleet mobility."
-          description="The contact flow is already wired with validation and mutation handling so it can connect to your backend later without reworking the UI."
-        />
-
-        <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="space-y-4">
-            {infoCards.map((card) => (
-              <div
-                key={card.label}
-                className="surface-card card-lift rounded-[2rem] border border-[rgba(16,27,45,0.08)] p-6 shadow-[var(--shadow-card)]"
-              >
-                <div className="inline-flex rounded-2xl bg-[rgba(49,94,230,0.08)] p-3 text-[var(--brand-start)]">
-                  <card.icon className="size-5" />
-                </div>
-                <div className="mt-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">{card.label}</div>
-                <div className="mt-2 text-lg font-semibold text-slate-950">{card.value}</div>
-              </div>
-            ))}
-          </div>
-
-          <div className="surface-card rounded-[2.4rem] border border-[rgba(16,27,45,0.08)] p-6 shadow-[var(--shadow-soft)] sm:p-8">
-            <form className="space-y-5" onSubmit={handleSubmit((values) => mutation.mutate(values))}>
-              <div className="grid gap-5 sm:grid-cols-2">
-                <Input label="Full Name" placeholder="Enter your name" {...register('name')} error={errors.name?.message} />
-                <Input label="Phone" placeholder="Enter your phone" {...register('phone')} error={errors.phone?.message} />
-              </div>
-              <Input label="Email" placeholder="Enter your email" {...register('email')} error={errors.email?.message} />
-              <Textarea
-                label="Message"
-                placeholder="Tell us what you need"
-                {...register('message')}
-                error={errors.message?.message}
-              />
-
-              {mutation.isSuccess ? (
-                <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
-                  {mutation.data.message}
-                </div>
-              ) : null}
-
-              <Button type="submit" disabled={mutation.isPending}>
-                {mutation.isPending ? 'Sending...' : 'Send Message'}
-              </Button>
-            </form>
-          </div>
+    <Container>
+      <div className="page-intro">
+        <span className="eyebrow">Start a conversation</span>
+        <h1 className="display-title">
+          Your journey
+          <br />
+          starts here.
+        </h1>
+        <p className="body-copy">
+          A question about a model? Exploring electric for the first time? Our team is here to help
+          you take the next step.
+        </p>
+      </div>
+      <div className="contact-layout">
+        <div>
+          <dl className="contact-details">
+            <div>
+              <dt>Call our team</dt>
+              <dd>
+                <a href={`tel:${siteConfig.phone}`}>{siteConfig.phone}</a>
+              </dd>
+            </div>
+            <div>
+              <dt>Email us</dt>
+              <dd>
+                <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
+              </dd>
+            </div>
+            <div>
+              <dt>Visit Energion</dt>
+              <dd>{siteConfig.address}</dd>
+            </div>
+          </dl>
+          <a
+            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(siteConfig.address)}`}
+            target="_blank"
+            rel="noreferrer"
+            className="text-link mt-5"
+          >
+            Get directions <ArrowUpRight size={16} />
+          </a>
+          <p className="form-note mt-8">
+            For model availability, dealership enquiries or help choosing your ride, contact our
+            team directly.
+          </p>
         </div>
-      </Container>
-    </div>
+        <div className="contact-form">
+          <h2 className="font-display text-3xl uppercase">Tell us what's on your mind.</h2>
+          <p className="form-note mt-3 mb-6">
+            Complete this form to prepare an enquiry email. Your email app will open when you choose
+            to send it.
+          </p>
+          <form
+            className="space-y-5"
+            onSubmit={handleSubmit((values) => mutation.mutate(values))}
+            onChange={() => mutation.reset()}
+            noValidate
+          >
+            <div className="grid gap-5 sm:grid-cols-2">
+              <Input
+                label="Your name"
+                autoComplete="name"
+                {...register('name')}
+                error={errors.name?.message}
+              />
+              <Input
+                label="Phone number"
+                type="tel"
+                autoComplete="tel"
+                {...register('phone')}
+                error={errors.phone?.message}
+              />
+            </div>
+            <Input
+              label="Email address"
+              type="email"
+              autoComplete="email"
+              {...register('email')}
+              error={errors.email?.message}
+            />
+            <Input
+              label="Model of interest (optional)"
+              placeholder="Which Energion moves you?"
+              {...register('model')}
+              error={errors.model?.message}
+            />
+            <Textarea
+              label="Your message"
+              placeholder="Tell us how we can help."
+              {...register('message')}
+              error={errors.message?.message}
+            />
+            {mutation.isError && (
+              <p role="alert" className="text-sm text-red-700">
+                Could not prepare your enquiry. Please call or email our team directly.
+              </p>
+            )}
+            {mutation.isSuccess ? (
+              <div role="status" className="rounded border border-brand-500 bg-surface-50 p-4">
+                <p className="form-note">{mutation.data.message}</p>
+                <a href={mutation.data.mailto} className="cta mt-4">
+                  Open email app <ArrowUpRight size={16} />
+                </a>
+              </div>
+            ) : (
+              <Button type="submit" disabled={mutation.isPending}>
+                {mutation.isPending ? 'Preparing...' : 'Prepare enquiry email'}
+                <ArrowUpRight size={16} />
+              </Button>
+            )}
+            <a className="text-link ml-4" href={`tel:${siteConfig.phone}`}>
+              <Phone size={14} /> Prefer to call?
+            </a>
+          </form>
+        </div>
+      </div>
+    </Container>
   )
 }

@@ -1,193 +1,164 @@
-import { AnimatePresence, motion } from 'framer-motion'
-import { Menu, X } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
-
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { Menu, X, ArrowUpRight } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import { navItems } from '../../constants/site'
 import { prefetchRoute } from '../../app/routePrefetch'
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../context/auth-store'
+import { useDialogFocus } from '../../lib/useDialogFocus'
 import logo from '../../assets/Energion Mobility logo-01.png'
-import { cn } from '../../lib/cn'
-import { Button } from '../ui/Button'
 import { Container } from '../ui/Container'
 
 export function Navbar() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const { user, isLoading, logout } = useAuth()
+  const [logoutError, setLogoutError] = useState('')
+  const { pathname } = useLocation()
+  const { user, logout } = useAuth()
+  const reduced = useReducedMotion()
+  const menuRef = useRef<HTMLDivElement>(null)
+  useDialogFocus(open, menuRef, () => setOpen(false))
 
   useEffect(() => {
-    if (!open) {
-      document.body.style.overflow = ''
-      return
-    }
-
-    document.body.style.overflow = 'hidden'
-
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [open])
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8)
+    const onScroll = () => setScrolled(window.scrollY > 40)
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    const onResize = () => {
+      if (window.innerWidth >= 1024) setOpen(false)
+    }
+    window.addEventListener('resize', onResize)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onResize)
+    }
   }, [])
 
+  async function signOut() {
+    try {
+      await logout()
+      setOpen(false)
+      setLogoutError('')
+    } catch {
+      setLogoutError('Could not sign out. Please try again.')
+    }
+  }
+
+  const account =
+    user?.role === 'admin'
+      ? { href: '/admin/dashboard', label: 'Dashboard' }
+      : { href: '/auth', label: user ? 'Account' : 'Login' }
   return (
-    <header
-      className={cn(
-        'fixed inset-x-0 top-0 z-40 border-b transition-all duration-300',
-        scrolled
-          ? 'border-[rgba(16,27,45,0.08)] bg-[rgba(248,251,255,0.9)] shadow-[0_10px_30px_rgba(8,17,31,0.06)] backdrop-blur-xl'
-          : 'border-white/50 bg-[rgba(248,251,255,0.78)] backdrop-blur-xl',
-      )}
-    >
-      <Container className="flex h-20 items-center justify-between gap-6">
-        <Link to="/" className="flex items-center gap-3">
-          <img
-            src={logo}
-            alt="Energion E-Mobility"
-            className="h-14 w-auto object-contain sm:h-16"
-          />
-        </Link>
-
-        <nav className="hidden items-center gap-1 rounded-full border border-[rgba(16,27,45,0.06)] bg-white/80 px-2 py-2 lg:flex">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.href}
-              to={item.href}
-              onMouseEnter={() => prefetchRoute(item.href)}
-              onFocus={() => prefetchRoute(item.href)}
-              className={({ isActive }) =>
-                cn(
-                  'relative isolate rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-200',
-                  isActive ? 'text-white' : 'text-slate-600 hover:text-slate-950',
-                )
-              }
-            >
-              {({ isActive }) => (
-                <>
-                  {isActive ? (
-                    <motion.span
-                      layoutId="nav-active-pill"
-                      className="absolute inset-0 -z-10 rounded-full bg-brand-gradient shadow-[0_10px_20px_rgba(49,94,230,0.18)]"
-                      transition={{ type: 'spring', stiffness: 480, damping: 38, mass: 0.7 }}
-                    />
-                  ) : null}
-                  <span className="relative z-10">{item.label}</span>
-                </>
-              )}
-            </NavLink>
-          ))}
-        </nav>
-
-        <div className="hidden items-center gap-3 lg:flex">
-          {user?.role === 'admin' ? (
-            <Link to="/admin/dashboard">
-              <Button>Dashboard</Button>
+    <>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:bg-white focus:p-4 focus:text-black"
+      >
+        Skip to content
+      </a>
+      <header className={`site-header ${pathname === '/' && !scrolled ? 'is-overlay' : ''}`}>
+        <Container>
+          <div className="header-inner">
+            <Link to="/" aria-label="Energion home">
+              <img
+                src={logo}
+                alt="Energion E-Mobility"
+                className="official-logo rounded-sm bg-white px-2"
+              />
             </Link>
-          ) : (
-            <Link to="/auth">
-              <Button>{isLoading ? 'Loading...' : 'Login'}</Button>
-            </Link>
-          )}
-          {user ? (
-            <Button variant="ghost" onClick={() => void logout()}>
-              Logout
-            </Button>
-          ) : null}
-        </div>
-
-        <button
-          type="button"
-          className="inline-flex size-11 items-center justify-center rounded-full border border-[rgba(16,27,45,0.08)] bg-white/85 lg:hidden"
-          onClick={() => setOpen((prev) => !prev)}
-          aria-label="Toggle navigation"
-        >
-          {open ? <X className="size-5" /> : <Menu className="size-5" />}
-        </button>
-      </Container>
-
-      <AnimatePresence>
-        {open ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-slate-950/28 backdrop-blur-[2px] lg:hidden"
-          >
-            <motion.div
-              initial={{ y: -28, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -28, opacity: 0 }}
-              transition={{ duration: 0.22, ease: 'easeOut' }}
-              className="absolute inset-x-0 top-0 border-b border-[rgba(16,27,45,0.06)] bg-[rgba(248,251,255,0.98)] shadow-[0_24px_60px_rgba(8,17,31,0.16)]"
-            >
-              <Container className="flex h-20 items-center justify-between gap-6">
-                <Link to="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
-                  <img
-                    src={logo}
-                    alt="Energion E-Mobility"
-                    className="h-14 w-auto object-contain sm:h-16"
-                  />
-                </Link>
-
-                <button
-                  type="button"
-                  className="inline-flex size-11 items-center justify-center rounded-full border border-[rgba(16,27,45,0.08)] bg-white"
-                  onClick={() => setOpen(false)}
-                  aria-label="Close navigation"
+            <nav className="header-nav" aria-label="Main navigation">
+              {navItems.map((item) => (
+                <NavLink
+                  end={item.href === '/'}
+                  key={item.href}
+                  to={item.href}
+                  onMouseEnter={() => prefetchRoute(item.href)}
+                  onFocus={() => prefetchRoute(item.href)}
                 >
-                  <X className="size-5" />
+                  {item.label}
+                </NavLink>
+              ))}
+            </nav>
+            <div className="header-actions">
+              <Link to={account.href}>{account.label}</Link>
+              {user && <button onClick={() => void signOut()}>Logout</button>}
+              <Link to="/contact" className="cta">
+                Enquire now <ArrowUpRight size={15} />
+              </Link>
+            </div>
+            <button
+              className="icon-button mobile-toggle"
+              aria-label="Open navigation"
+              aria-expanded={open}
+              aria-controls="mobile-navigation"
+              onClick={() => setOpen(true)}
+            >
+              <Menu size={20} />
+            </button>
+          </div>
+          {logoutError && (
+            <p role="alert" className="pb-2 text-xs">
+              {logoutError}
+            </p>
+          )}
+        </Container>
+      </header>
+      {createPortal(
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              ref={menuRef}
+              id="mobile-navigation"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Mobile navigation"
+              className="mobile-menu"
+              initial={{ opacity: 0, y: reduced ? 0 : -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+            >
+              <div className="mobile-menu-top">
+                <img
+                  src={logo}
+                  alt="Energion E-Mobility"
+                  className="official-logo rounded-sm bg-white px-2"
+                />
+                <button
+                  className="icon-button"
+                  aria-label="Close navigation"
+                  onClick={() => setOpen(false)}
+                >
+                  <X size={20} />
                 </button>
-              </Container>
-
-              <Container className="flex flex-col gap-3 pb-6">
+              </div>
+              <nav aria-label="Mobile">
                 {navItems.map((item) => (
-                  <motion.div key={item.href} initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }}>
-                    <NavLink
-                      to={item.href}
-                      className={({ isActive }) =>
-                        cn(
-                          'rounded-2xl px-4 py-3 text-sm font-semibold text-slate-700 transition',
-                          isActive && 'bg-[rgba(49,94,230,0.08)] text-(--brand-start)',
-                        )
-                      }
-                      onClick={() => setOpen(false)}
-                    >
-                      {item.label}
-                    </NavLink>
-                  </motion.div>
-                ))}
-                {user?.role === 'admin' ? (
-                  <Link to="/admin/dashboard" onClick={() => setOpen(false)}>
-                    <Button fullWidth>Dashboard</Button>
-                  </Link>
-                ) : (
-                  <Link to="/auth" onClick={() => setOpen(false)}>
-                    <Button fullWidth>{isLoading ? 'Loading...' : 'Login'}</Button>
-                  </Link>
-                )}
-                {user ? (
-                  <Button
-                    fullWidth
-                    variant="ghost"
-                    onClick={async () => {
-                      await logout()
-                      setOpen(false)
-                    }}
+                  <NavLink
+                    end={item.href === '/'}
+                    key={item.href}
+                    to={item.href}
+                    onClick={() => setOpen(false)}
                   >
-                    Logout
-                  </Button>
-                ) : null}
-              </Container>
+                    {item.label}
+                  </NavLink>
+                ))}
+              </nav>
+              <div className="mobile-menu-bottom">
+                <Link to="/contact" className="cta" onClick={() => setOpen(false)}>
+                  Enquire now <ArrowUpRight size={18} />
+                </Link>
+                <Link to={account.href} onClick={() => setOpen(false)}>
+                  {account.label}
+                </Link>
+                {user && <button onClick={() => void signOut()}>Logout</button>}
+                {logoutError && <p role="alert">{logoutError}</p>}
+              </div>
             </motion.div>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
-    </header>
+          )}
+        </AnimatePresence>,
+        document.body,
+      )}
+    </>
   )
 }

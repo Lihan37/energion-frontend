@@ -1,73 +1,46 @@
-# React + TypeScript + Vite
+# Energion E-Mobility
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React 19 + TypeScript + Vite 8 frontend for the Energion public site and admin
+workspace. Uses Tailwind 4, React Router, TanStack Query, Framer Motion,
+React Hook Form and Zod.
 
-Currently, two official plugins are available:
+## Run locally
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```sh
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Configure `VITE_API_URL` in `.env` using `.env.example`. The existing Railway API
+is the default. Credentials and Cloudinary signing secrets belong on the backend,
+never in a frontend `VITE_*` variable.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Verify
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```sh
+npm run build
+npm run lint
+npm run test:e2e
 ```
+
+Browser tests use installed Google Chrome and mock API writes/authentication.
+They generate desktop/mobile review screenshots under `artifacts/redesign/`.
+No production records are modified by the test suite.
+
+## Redesign review
+
+See [the implementation and QA report](docs/REDESIGN.md) for all updated routes,
+the design system, public pricing policy, accessibility, service limitations,
+screenshots and release notes.
+
+Product prices are omitted from all public presentation; admin data retains them.
+The supplied nine-model catalog uses twenty authentic WebP images uploaded to
+Cloudinary. Galleries, descriptions, image metadata and public visibility can be
+changed in admin. See [the bike import report](docs/BIKE-IMPORT.md).
+
+The original contact service was a simulated submission. The current validated
+form prepares an enquiry email for the configured business email, with explicit
+email-app handoff. A server contact endpoint is required for in-site delivery.
+
+Netlify's existing SPA redirect file is preserved. Production runs on the existing
+Energion Netlify site and Railway API; private upload credentials remain backend-only.

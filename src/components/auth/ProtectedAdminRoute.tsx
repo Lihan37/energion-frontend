@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../context/auth-store'
 import { LoadingState } from '../ui/LoadingState'
 
 export function ProtectedAdminRoute({ children }: PropsWithChildren) {

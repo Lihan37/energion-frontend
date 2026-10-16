@@ -8,11 +8,11 @@ export const siteConfig = {
 
 export const navItems = [
   { label: 'Home', href: '/' },
-  { label: 'Products', href: '/products' },
+  { label: 'Our Bikes', href: '/products' },
   { label: 'Blog', href: '/blog' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
-  { label: 'Map', href: '/map' },
+  { label: 'Find a Dealer', href: '/map' },
 ] as const
 
 export const adminNavItems = [

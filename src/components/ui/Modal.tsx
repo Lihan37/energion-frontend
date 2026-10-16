@@ -1,9 +1,9 @@
-import { AnimatePresence, motion } from 'framer-motion'
-import { useEffect, type PropsWithChildren } from 'react'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { useRef, type PropsWithChildren } from 'react'
 import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
-
 import { cn } from '../../lib/cn'
+import { useDialogFocus } from '../../lib/useDialogFocus'
 
 interface ModalProps extends PropsWithChildren {
   isOpen: boolean
@@ -11,68 +11,49 @@ interface ModalProps extends PropsWithChildren {
   title: string
   className?: string
 }
-
 export function Modal({ isOpen, onClose, title, children, className }: ModalProps) {
-  useEffect(() => {
-    if (!isOpen) return
-
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose()
-      }
-    }
-
-    document.body.style.overflow = 'hidden'
-    window.addEventListener('keydown', handleEscape)
-
-    return () => {
-      document.body.style.overflow = ''
-      window.removeEventListener('keydown', handleEscape)
-    }
-  }, [isOpen, onClose])
-
-  if (typeof document === 'undefined') return null
-
+  const dialogRef = useRef<HTMLDivElement>(null)
+  const reduced = useReducedMotion()
+  useDialogFocus(isOpen, dialogRef, onClose)
   return createPortal(
     <AnimatePresence>
-      {isOpen ? (
+      {isOpen && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-ink-950/70 p-3 backdrop-blur-sm sm:p-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.2, ease: 'easeOut' }}
+          transition={{ duration: reduced ? 0 : 0.2 }}
           onClick={onClose}
         >
           <motion.div
+            ref={dialogRef}
             className={cn(
-              'surface-card max-h-[92vh] w-full max-w-5xl overflow-hidden rounded-[2rem] border border-white/40 shadow-[0_28px_90px_rgba(8,17,31,0.32)]',
+              'flex max-h-[92dvh] w-full max-w-5xl flex-col overflow-hidden rounded-lg bg-surface-50 shadow-2xl',
               className,
             )}
-            initial={{ opacity: 0, y: 32, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 16, scale: 0.98 }}
-            transition={{ duration: 0.22, ease: 'easeOut' }}
-            onClick={(event) => event.stopPropagation()}
-            aria-modal="true"
+            initial={{ y: reduced ? 0 : 20 }}
+            animate={{ y: 0 }}
             role="dialog"
+            aria-modal="true"
             aria-label={title}
+            onClick={(event) => event.stopPropagation()}
           >
-            <div className="flex items-center justify-between border-b border-[rgba(16,27,45,0.08)] px-6 py-4">
-              <h3 className="font-display text-lg font-semibold text-slate-950">{title}</h3>
+            <div className="flex shrink-0 items-center justify-between border-b border-black/10 px-5 py-3">
+              <span className="font-display text-xl font-semibold uppercase">{title}</span>
               <button
                 type="button"
+                className="icon-button"
                 onClick={onClose}
-                className="inline-flex size-10 items-center justify-center rounded-full border border-[rgba(16,27,45,0.08)] bg-white/80 text-slate-700 transition hover:bg-white"
                 aria-label="Close modal"
               >
-                <X className="size-5" />
+                <X size={19} />
               </button>
             </div>
-            <div className="max-h-[calc(92vh-72px)] overflow-y-auto">{children}</div>
+            <div className="min-h-0 overflow-y-auto overscroll-contain">{children}</div>
           </motion.div>
         </motion.div>
-      ) : null}
+      )}
     </AnimatePresence>,
     document.body,
   )

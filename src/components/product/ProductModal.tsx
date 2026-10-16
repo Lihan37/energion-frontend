@@ -1,108 +1,74 @@
-import { ArrowRight, CheckCircle2, ImageOff } from 'lucide-react'
-
-import type { Product } from '../../types/product'
-import { Badge } from '../ui/Badge'
-import { Button } from '../ui/Button'
+import { ArrowUpRight, Phone } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { enquiryUrl, type PublicProduct } from '../../lib/productPresentation'
+import { siteConfig } from '../../constants/site'
 import { Modal } from '../ui/Modal'
-import { SmoothImage } from '../ui/SmoothImage'
+import { SpecificationHighlights } from './SpecificationHighlights'
+import { VehicleImage } from './VehicleImage'
+import { ProductGallery } from './ProductGallery'
 
 interface ProductModalProps {
-  product: Product | null
+  product: PublicProduct | null
   isOpen: boolean
   onClose: () => void
 }
 
 export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
   if (!product) return null
-
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={product.name}>
-      <div className="space-y-8 p-6 lg:p-8">
-        <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-          <div className="space-y-5">
-            <div className="flex h-[300px] items-center justify-center overflow-hidden rounded-[1.75rem] border border-[rgba(16,27,45,0.06)] bg-[linear-gradient(180deg,#f8faff_0%,#edf2fc_58%,#dce5f5_100%)] sm:h-[360px]">
-              {product.image ? (
-                <SmoothImage
-                  src={product.image}
-                  alt={product.name}
-                  loading="eager"
-                  className="h-full w-full object-contain p-4 sm:p-5"
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center text-center">
-                  <div className="text-slate-500">
-                    <ImageOff className="mx-auto size-10 text-slate-400" />
-                    <div className="mt-4 text-base font-medium">Product image will be added soon</div>
-                  </div>
+    <Modal isOpen={isOpen} onClose={onClose} title={product.name} className="product-dialog">
+      <div className="product-detail">
+        <div className="detail-top">
+          <div>
+            {product.images?.length ? (
+              <ProductGallery key={product.id} product={product} />
+            ) : (
+              <div className="detail-visual">
+                <VehicleImage src={product.image} name={product.name} eager />
+              </div>
+            )}
+            <SpecificationHighlights product={product} />
+          </div>
+          <div>
+            <span className="eyebrow">
+              {product.category}
+              {product.tag ? ` / ${product.tag}` : ''}
+            </span>
+            <h2 className="detail-name">{product.name}</h2>
+            <p className="detail-copy">{product.description}</p>
+            {product.colors.length > 0 && (
+              <>
+                <h3 className="mt-6 text-[10px] uppercase tracking-widest">Available colours</h3>
+                <div className="detail-colors">
+                  {product.colors.map((color) => (
+                    <span key={color}>{color}</span>
+                  ))}
                 </div>
-              )}
+              </>
+            )}
+            <div className="model-actions">
+              <Link to={enquiryUrl(product)} onClick={onClose} className="cta">
+                Enquire about this model <ArrowUpRight size={16} />
+              </Link>
+              <a href={`tel:${siteConfig.phone}`} className="text-link">
+                <Phone size={15} /> Talk to our team
+              </a>
             </div>
-            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-              {[
-                ['Battery', product.battery],
-                ['Range', product.range],
-                ['Top Speed', product.topSpeed],
-                ['Charge Time', product.chargingTime],
-              ].map(([label, value]) => (
-                <div key={label} className="rounded-[1.5rem] border border-[rgba(16,27,45,0.08)] bg-slate-50/80 p-4">
-                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">{label}</div>
-                  <div className="mt-2 text-sm font-semibold text-slate-950">{value}</div>
+          </div>
+        </div>
+        {product.specs.length > 0 && (
+          <section className="detail-section">
+            <h3>Made for the way you move.</h3>
+            <dl className="detail-specs">
+              {product.specs.map((spec, index) => (
+                <div key={`${spec.label}-${index}`}>
+                  <dt>{spec.label}</dt>
+                  <dd>{spec.value}</dd>
                 </div>
               ))}
-            </div>
-          </div>
-
-          <div className="space-y-6">
-            <div className="flex flex-wrap items-center gap-3">
-              <Badge tone="gradient">{product.category}</Badge>
-              {product.tag ? <Badge>{product.tag}</Badge> : null}
-            </div>
-            <div>
-              <div className="text-sm font-semibold uppercase tracking-[0.26em] text-slate-500">Starting price</div>
-              <div className="mt-2 font-display text-4xl font-bold text-slate-950">Tk {product.price.toLocaleString()}</div>
-            </div>
-            <p className="text-base leading-8 text-slate-600">{product.description}</p>
-
-            <div className="rounded-[1.75rem] border border-[rgba(16,27,45,0.08)] bg-white/80 p-5">
-              <div className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Available Colors</div>
-              <div className="mt-4 flex flex-wrap gap-3">
-                {product.colors.map((color) => (
-                  <span key={color} className="rounded-full border border-[rgba(16,27,45,0.08)] px-4 py-2 text-sm font-medium text-slate-700">
-                    {color}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Button className="sm:flex-1">
-                Book a Test Ride
-                <ArrowRight className="ml-2 size-4" />
-              </Button>
-              <Button variant="secondary" className="sm:flex-1">
-                Talk to Sales
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <div className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-500">Features & Specs</div>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-            {product.specs.map((spec) => (
-              <div
-                key={spec.label}
-                className="flex items-start gap-3 rounded-[1.25rem] border border-[rgba(16,27,45,0.06)] bg-slate-50/70 px-4 py-3"
-              >
-                <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[var(--brand-start)]" />
-                <div>
-                  <div className="text-sm font-semibold text-slate-900">{spec.label}</div>
-                  <div className="text-sm text-slate-600">{spec.value}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+            </dl>
+          </section>
+        )}
       </div>
     </Modal>
   )

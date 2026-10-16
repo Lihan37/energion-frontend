@@ -11,10 +11,10 @@ export function Badge({ children, className, tone = 'soft' }: BadgeProps) {
   return (
     <span
       className={cn(
-        'inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold tracking-[0.24em] uppercase',
+        'inline-flex items-center rounded-sm px-3 py-1 text-[10px] font-semibold tracking-[0.2em] uppercase',
         tone === 'gradient'
-          ? 'bg-brand-gradient text-white'
-          : 'border border-[rgba(49,94,230,0.12)] bg-[rgba(49,94,230,0.06)] text-[var(--brand-start)]',
+          ? 'bg-brand-gradient text-ink-950'
+          : 'border border-[var(--line-strong)] bg-surface-100 text-ink-950',
         className,
       )}
     >

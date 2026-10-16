@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { ImageOff, ImagePlus, Pencil, Plus, RefreshCcw, Trash2, UploadCloud } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -19,32 +19,45 @@ import {
   updateProduct,
   type ProductPayload,
 } from '../../services/productService'
-import type { Product } from '../../types/product'
+import type { Product, ProductImage } from '../../types/product'
 
 const productFormSchema = z.object({
   name: z.string().trim().min(2, 'Product name is required.'),
   slug: z.string().trim().optional(),
   category: z.string().trim().min(2, 'Category is required.'),
-  price: z.number().min(1, 'Price must be greater than 0.'),
-  battery: z.string().trim().min(2, 'Battery is required.'),
-  range: z.string().trim().min(2, 'Range is required.'),
-  topSpeed: z.string().trim().min(2, 'Top speed is required.'),
-  chargingTime: z.string().trim().min(2, 'Charging time is required.'),
+  price: z.number().min(0, 'Price cannot be negative.'),
+  battery: z.string().trim(),
+  range: z.string().trim(),
+  topSpeed: z.string().trim(),
+  chargingTime: z.string().trim(),
   colorsInput: z.string().trim().min(2, 'Add at least one color.'),
   shortDescription: z.string().trim().min(10, 'Short description is too short.'),
   description: z.string().trim().min(20, 'Description is too short.'),
   tag: z.string().trim().optional(),
   featured: z.boolean().default(false),
-  specs: z.array(z.object({
-    label: z.string().trim().min(1, 'Label is required.'),
-    value: z.string().trim().min(1, 'Value is required.'),
-  })).min(1, 'Add at least one specification.'),
+  published: z.boolean().default(true),
+  specs: z.array(
+    z.object({
+      label: z.string().trim().min(1, 'Label is required.'),
+      value: z.string().trim(),
+    }),
+  ),
 })
 
 type ProductFormValues = z.input<typeof productFormSchema>
 
 const categoryOptions = ['Urban', 'Adventure', 'Cargo']
-const docModels = ['EVOX', 'NEXO', 'Xplorer', 'Jaguar', 'Venturer']
+const docModels = [
+  'EVOX',
+  'NEXO',
+  'FURY',
+  'Xplorer Pro',
+  'Aura',
+  'Blast',
+  'Pulse',
+  'Sprinto',
+  'Velox',
+]
 const defaultSpecRows = [
   { label: 'Motor', value: '' },
   { label: 'Controller', value: '' },
@@ -75,6 +88,7 @@ function getDefaultValues(): ProductFormValues {
     description: '',
     tag: '',
     featured: false,
+    published: true,
     specs: defaultSpecRows,
   }
 }
@@ -89,16 +103,22 @@ function toPayload(values: ProductFormValues): ProductPayload {
     range: values.range.trim(),
     topSpeed: values.topSpeed.trim(),
     chargingTime: values.chargingTime.trim(),
-    colors: values.colorsInput.split(',').map((item) => item.trim()).filter(Boolean),
+    colors: values.colorsInput
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean),
     shortDescription: values.shortDescription.trim(),
     description: values.description.trim(),
     tag: values.tag?.trim() || '',
     featured: values.featured ?? false,
+    published: values.published ?? true,
     removeImage: false,
-    specs: values.specs.map((spec) => ({
-      label: spec.label.trim(),
-      value: spec.value.trim(),
-    })),
+    specs: values.specs
+      .filter((spec) => spec.value.trim())
+      .map((spec) => ({
+        label: spec.label.trim(),
+        value: spec.value.trim(),
+      })),
   }
 }
 
@@ -108,6 +128,8 @@ export function AdminProductsPage() {
   const [imagePreview, setImagePreview] = useState('')
   const [imageError, setImageError] = useState('')
   const [removeCurrentImage, setRemoveCurrentImage] = useState(false)
+  const [galleryImages, setGalleryImages] = useState<ProductImage[]>([])
+  const [primaryImageUrl, setPrimaryImageUrl] = useState('')
   const [serverMessage, setServerMessage] = useState('')
   const [serverError, setServerError] = useState('')
   const queryClient = useQueryClient()
@@ -128,7 +150,8 @@ export function AdminProductsPage() {
   })
 
   const createMutation = useMutation({
-    mutationFn: ({ payload, file }: { payload: ProductPayload; file: File }) => createProduct(payload, file),
+    mutationFn: ({ payload, file }: { payload: ProductPayload; file: File }) =>
+      createProduct(payload, file),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['admin-products'] })
       void queryClient.invalidateQueries({ queryKey: ['products'] })
@@ -184,17 +207,17 @@ export function AdminProductsPage() {
       return
     }
 
-    const objectUrl = URL.createObjectURL(imageFile)
-    setImagePreview(objectUrl)
-
-    return () => {
-      URL.revokeObjectURL(objectUrl)
-    }
+    const reader = new FileReader()
+    reader.onload = () => setImagePreview(String(reader.result))
+    reader.readAsDataURL(imageFile)
+    return () => reader.abort()
   }, [imageFile])
 
-  const totalFeatured = useMemo(() => products.filter((product) => product.featured).length, [products])
+  const totalFeatured = products.filter((product) => product.featured).length
 
   function resetForm() {
+    setGalleryImages([])
+    setPrimaryImageUrl('')
     setEditingProduct(null)
     setImageFile(null)
     setImagePreview('')
@@ -204,6 +227,14 @@ export function AdminProductsPage() {
   }
 
   function startEditing(product: Product) {
+    setGalleryImages(
+      product.images?.length
+        ? product.images
+        : product.image
+          ? [{ url: product.image, alt: `${product.name} electric vehicle` }]
+          : [],
+    )
+    setPrimaryImageUrl(product.image)
     setEditingProduct(product)
     setServerError('')
     setServerMessage('')
@@ -225,6 +256,7 @@ export function AdminProductsPage() {
       description: product.description,
       tag: product.tag ?? '',
       featured: Boolean(product.featured),
+      published: product.published !== false,
       specs: product.specs.length ? product.specs : defaultSpecRows,
     })
   }
@@ -250,8 +282,9 @@ export function AdminProductsPage() {
                 Keep the Energion lineup accurate, polished, and ready for the public catalog.
               </h1>
               <p className="mt-4 max-w-4xl text-sm leading-8 text-slate-600 sm:text-base">
-                Add document-based specs, update pricing, manage colors, and upload product visuals here.
-                Once saved, each product becomes part of the public products page automatically.
+                Add document-based specs, update pricing, manage colors, and upload product visuals
+                here. Once saved, each product becomes part of the public products page
+                automatically.
               </p>
 
               <div className="mt-6 flex flex-wrap gap-3">
@@ -263,19 +296,31 @@ export function AdminProductsPage() {
 
             <div className="grid gap-4 md:grid-cols-3">
               <div className="rounded-[1.8rem] bg-slate-950 p-5 text-white shadow-[0_18px_40px_rgba(15,23,42,0.28)]">
-                <div className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">Catalog Size</div>
+                <div className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">
+                  Catalog Size
+                </div>
                 <div className="mt-4 text-4xl font-semibold">{products.length}</div>
-                <p className="mt-2 text-sm leading-7 text-slate-300">Current models available to riders on the public site.</p>
+                <p className="mt-2 text-sm leading-7 text-slate-300">
+                  Current models available to riders on the public site.
+                </p>
               </div>
               <div className="rounded-[1.6rem] border border-[rgba(16,27,45,0.08)] bg-white/85 p-5">
-                <div className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">Hero Models</div>
+                <div className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
+                  Hero Models
+                </div>
                 <div className="mt-4 text-4xl font-semibold text-slate-950">{totalFeatured}</div>
-                <p className="mt-2 text-sm leading-7 text-slate-600">Listings currently highlighted with stronger visibility.</p>
+                <p className="mt-2 text-sm leading-7 text-slate-600">
+                  Listings currently highlighted with stronger visibility.
+                </p>
               </div>
               <div className="rounded-[1.6rem] border border-[rgba(16,27,45,0.08)] bg-white/85 p-5">
-                <div className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">Visual Assets</div>
+                <div className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
+                  Visual Assets
+                </div>
                 <div className="mt-4 text-4xl font-semibold text-slate-950">Images</div>
-                <p className="mt-2 text-sm leading-7 text-slate-600">Product photos here support the cards and the modal details view.</p>
+                <p className="mt-2 text-sm leading-7 text-slate-600">
+                  Product photos here support the cards and the modal details view.
+                </p>
               </div>
             </div>
           </div>
@@ -289,7 +334,9 @@ export function AdminProductsPage() {
               <div>
                 <Badge>{editingProduct ? 'Edit Product' : 'Add Product'}</Badge>
                 <h2 className="mt-4 font-display text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                  {editingProduct ? `Update ${editingProduct.name}` : 'Create a new product listing'}
+                  {editingProduct
+                    ? `Update ${editingProduct.name}`
+                    : 'Create a new product listing'}
                 </h2>
               </div>
               <Button variant="secondary" onClick={resetForm}>
@@ -318,6 +365,8 @@ export function AdminProductsPage() {
 
                 const payload = toPayload(values)
                 payload.removeImage = removeCurrentImage
+                payload.images = galleryImages
+                payload.primaryImageUrl = primaryImageUrl
 
                 if (!editingProduct && !imageFile) {
                   setImageError('Product image is required when creating a new product.')
@@ -325,23 +374,37 @@ export function AdminProductsPage() {
                 }
 
                 if (editingProduct) {
-                  await updateMutation.mutateAsync({
-                    productId: editingProduct.id,
-                    payload,
-                    file: imageFile,
-                  })
+                  await updateMutation
+                    .mutateAsync({
+                      productId: editingProduct.id,
+                      payload,
+                      file: imageFile,
+                    })
+                    .catch(() => {})
                   return
                 }
 
-                await createMutation.mutateAsync({
-                  payload,
-                  file: imageFile as File,
-                })
+                await createMutation
+                  .mutateAsync({
+                    payload,
+                    file: imageFile as File,
+                  })
+                  .catch(() => {})
               })}
             >
               <div className="grid gap-5 sm:grid-cols-2">
-                <Input label="Product Name" placeholder="EVOX" {...form.register('name')} error={form.formState.errors.name?.message} />
-                <Input label="Slug" placeholder="Auto from name if empty" {...form.register('slug')} error={form.formState.errors.slug?.message} />
+                <Input
+                  label="Product Name"
+                  placeholder="EVOX"
+                  {...form.register('name')}
+                  error={form.formState.errors.name?.message}
+                />
+                <Input
+                  label="Slug"
+                  placeholder="Auto from name if empty"
+                  {...form.register('slug')}
+                  error={form.formState.errors.slug?.message}
+                />
               </div>
 
               <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
@@ -365,20 +428,57 @@ export function AdminProductsPage() {
                   {...form.register('price', { valueAsNumber: true })}
                   error={form.formState.errors.price?.message}
                 />
-                <Input label="Battery" placeholder="60V 26Ah" {...form.register('battery')} error={form.formState.errors.battery?.message} />
-                <Input label="Range / Mileage" placeholder="85-95 Km" {...form.register('range')} error={form.formState.errors.range?.message} />
+                <Input
+                  label="Battery"
+                  placeholder="60V 26Ah"
+                  {...form.register('battery')}
+                  error={form.formState.errors.battery?.message}
+                />
+                <Input
+                  label="Range / Mileage"
+                  placeholder="85-95 Km"
+                  {...form.register('range')}
+                  error={form.formState.errors.range?.message}
+                />
               </div>
 
               <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-                <Input label="Top Speed" placeholder="45-50 Km/h" {...form.register('topSpeed')} error={form.formState.errors.topSpeed?.message} />
-                <Input label="Charging Time" placeholder="6-7 Hours" {...form.register('chargingTime')} error={form.formState.errors.chargingTime?.message} />
-                <Input label="Tag" placeholder="Performance" {...form.register('tag')} error={form.formState.errors.tag?.message} />
+                <Input
+                  label="Top Speed"
+                  placeholder="45-50 Km/h"
+                  {...form.register('topSpeed')}
+                  error={form.formState.errors.topSpeed?.message}
+                />
+                <Input
+                  label="Charging Time"
+                  placeholder="6-7 Hours"
+                  {...form.register('chargingTime')}
+                  error={form.formState.errors.chargingTime?.message}
+                />
+                <Input
+                  label="Tag"
+                  placeholder="Performance"
+                  {...form.register('tag')}
+                  error={form.formState.errors.tag?.message}
+                />
                 <label className="flex items-center gap-3 rounded-[1.4rem] border border-[rgba(16,27,45,0.08)] bg-slate-50/80 px-4 py-4 text-sm font-medium text-slate-700">
-                  <input type="checkbox" className="size-4 rounded border-slate-300" {...form.register('featured')} />
+                  <input
+                    type="checkbox"
+                    className="size-4 rounded border-slate-300"
+                    {...form.register('featured')}
+                  />
                   Mark as featured product
                 </label>
               </div>
 
+              <label className="flex items-center gap-3 text-sm font-medium text-slate-800">
+                <input type="checkbox" {...form.register('published')} />
+                Visible on public website
+              </label>
+              <p className="text-sm text-slate-500">
+                Leave unconfirmed technical specifications blank. A price of 0 means it has not been
+                set internally; prices are never shown publicly.
+              </p>
               <Input
                 label="Available Colors"
                 placeholder="Gorgeous Black, Cherry Red"
@@ -429,7 +529,11 @@ export function AdminProductsPage() {
 
                     {imagePreview ? (
                       <div className="mt-4 overflow-hidden rounded-[1.4rem]">
-                        <img src={imagePreview} alt="Preview" className="h-44 w-full object-cover" />
+                        <img
+                          src={imagePreview}
+                          alt="Preview"
+                          className="h-44 w-full object-contain"
+                        />
                       </div>
                     ) : (
                       <div className="mt-4 flex h-44 items-center justify-center rounded-[1.4rem] border border-dashed border-[rgba(16,27,45,0.1)] bg-white/80 text-sm text-slate-500">
@@ -464,6 +568,95 @@ export function AdminProductsPage() {
                 </label>
               </div>
 
+              {editingProduct && galleryImages.length > 0 && (
+                <section className="rounded-xl border border-black/10 bg-white p-5">
+                  <h3 className="font-display text-2xl">Product image gallery</h3>
+                  <p className="mt-2 text-sm text-slate-500">
+                    Choose the cover image, update descriptions and colours, or remove an image from
+                    this model. Save the product to apply changes.
+                  </p>
+                  <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                    {galleryImages.map((image, index) => (
+                      <div key={image.url} className="rounded-lg border border-black/10 p-3">
+                        <img
+                          src={image.url}
+                          alt={image.alt}
+                          className="h-36 w-full object-contain"
+                        />
+                        <div className="mt-3 space-y-3">
+                          <Input
+                            label={`Image ${index + 1} description`}
+                            value={image.alt}
+                            onChange={(event) =>
+                              setGalleryImages((items) =>
+                                items.map((item, position) =>
+                                  position === index ? { ...item, alt: event.target.value } : item,
+                                ),
+                              )
+                            }
+                          />
+                          <Input
+                            label={`Image ${index + 1} caption`}
+                            value={image.caption ?? ''}
+                            onChange={(event) =>
+                              setGalleryImages((items) =>
+                                items.map((item, position) =>
+                                  position === index
+                                    ? { ...item, caption: event.target.value }
+                                    : item,
+                                ),
+                              )
+                            }
+                          />
+                          <Input
+                            label={`Image ${index + 1} colour`}
+                            value={image.colour ?? ''}
+                            onChange={(event) =>
+                              setGalleryImages((items) =>
+                                items.map((item, position) =>
+                                  position === index
+                                    ? { ...item, colour: event.target.value }
+                                    : item,
+                                ),
+                              )
+                            }
+                          />
+                          <div className="flex flex-wrap gap-2">
+                            <Button
+                              type="button"
+                              variant={primaryImageUrl === image.url ? 'primary' : 'secondary'}
+                              onClick={() => {
+                                setPrimaryImageUrl(image.url)
+                                setImagePreview(image.url)
+                                setRemoveCurrentImage(false)
+                              }}
+                            >
+                              {primaryImageUrl === image.url ? 'Cover image' : 'Use as cover'}
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              onClick={() => {
+                                const remaining = galleryImages.filter(
+                                  (item) => item.url !== image.url,
+                                )
+                                setGalleryImages(remaining)
+                                if (primaryImageUrl === image.url) {
+                                  setPrimaryImageUrl(remaining[0]?.url ?? '')
+                                  setImagePreview(remaining[0]?.url ?? '')
+                                  setRemoveCurrentImage(!remaining.length)
+                                }
+                              }}
+                            >
+                              Remove
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
               <Textarea
                 label="Full Description"
                 placeholder="Write the detailed product description shown in the modal and admin-managed listing."
@@ -476,8 +669,8 @@ export function AdminProductsPage() {
                   <div>
                     <div className="text-sm font-semibold text-slate-900">Features & Specs</div>
                     <div className="mt-1 text-sm leading-7 text-slate-600">
-                      These rows map directly to the company document fields like motor, controller, dimension,
-                      clearance, braking, display, weight, and feature list.
+                      These rows map directly to the company document fields like motor, controller,
+                      dimension, clearance, braking, display, weight, and feature list.
                     </div>
                   </div>
                   <Button
@@ -492,7 +685,10 @@ export function AdminProductsPage() {
 
                 <div className="mt-5 space-y-4">
                   {specsFieldArray.fields.map((field, index) => (
-                    <div key={field.id} className="grid gap-4 rounded-[1.5rem] border border-[rgba(16,27,45,0.08)] bg-white p-4 sm:grid-cols-[1fr_1.6fr_auto]">
+                    <div
+                      key={field.id}
+                      className="grid gap-4 rounded-[1.5rem] border border-[rgba(16,27,45,0.08)] bg-white p-4 sm:grid-cols-[1fr_1.6fr_auto]"
+                    >
                       <Input
                         label="Label"
                         placeholder="Motor"
@@ -550,7 +746,9 @@ export function AdminProductsPage() {
                   Current website products, ready for update or removal
                 </h2>
               </div>
-              <div className="text-sm text-slate-500">Every record here feeds the main Energion products page</div>
+              <div className="text-sm text-slate-500">
+                Every record here feeds the main Energion products page
+              </div>
             </div>
 
             {productsQuery.isLoading ? (
@@ -572,7 +770,11 @@ export function AdminProductsPage() {
                       <div className="grid gap-5 p-4 sm:p-5 xl:grid-cols-[220px_minmax(0,1fr)_auto] xl:items-start">
                         <div className="overflow-hidden rounded-[1.5rem]">
                           {product.image ? (
-                            <img src={product.image} alt={product.name} className="h-44 w-full object-cover" />
+                            <img
+                              src={product.image}
+                              alt={product.name}
+                              className="h-44 w-full object-cover"
+                            />
                           ) : (
                             <div className="flex h-44 w-full items-center justify-center bg-slate-100 text-center text-sm font-medium text-slate-500">
                               <div>
@@ -589,8 +791,12 @@ export function AdminProductsPage() {
                             {product.tag ? <Badge>{product.tag}</Badge> : null}
                             {product.featured ? <Badge>Featured</Badge> : null}
                           </div>
-                          <h3 className="mt-4 font-display text-2xl font-semibold text-slate-950">{product.name}</h3>
-                          <p className="mt-3 text-sm leading-7 text-slate-600">{product.shortDescription}</p>
+                          <h3 className="mt-4 font-display text-2xl font-semibold text-slate-950">
+                            {product.name}
+                          </h3>
+                          <p className="mt-3 text-sm leading-7 text-slate-600">
+                            {product.shortDescription}
+                          </p>
 
                           <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                             {[
@@ -599,16 +805,27 @@ export function AdminProductsPage() {
                               ['Top Speed', product.topSpeed],
                               ['Charging', product.chargingTime],
                             ].map(([label, value]) => (
-                              <div key={label} className="rounded-2xl border border-[rgba(16,27,45,0.06)] bg-white px-4 py-3">
-                                <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">{label}</div>
-                                <div className="mt-2 text-sm font-semibold text-slate-900">{value}</div>
+                              <div
+                                key={label}
+                                className="rounded-2xl border border-[rgba(16,27,45,0.06)] bg-white px-4 py-3"
+                              >
+                                <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                                  {label}
+                                </div>
+                                <div className="mt-2 text-sm font-semibold text-slate-900">
+                                  {value}
+                                </div>
                               </div>
                             ))}
                           </div>
                         </div>
 
                         <div className="flex flex-row gap-3 xl:flex-col">
-                          <Button type="button" variant="secondary" onClick={() => startEditing(product)}>
+                          <Button
+                            type="button"
+                            variant="secondary"
+                            onClick={() => startEditing(product)}
+                          >
                             <Pencil className="mr-2 size-4" />
                             Edit
                           </Button>

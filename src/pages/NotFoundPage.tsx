@@ -1,25 +1,23 @@
 import { Link } from 'react-router-dom'
-
-import { Button } from '../components/ui/Button'
+import { ArrowUpRight } from 'lucide-react'
 import { Container } from '../components/ui/Container'
-
 export function NotFoundPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
-      <Container className="max-w-2xl">
-        <div className="surface-card rounded-[2.5rem] border border-[rgba(16,27,45,0.08)] px-6 py-12 text-center shadow-[var(--shadow-soft)] sm:px-10">
-          <div className="text-sm font-semibold uppercase tracking-[0.3em] text-[var(--brand-start)]">404</div>
-          <h1 className="mt-4 font-display text-5xl font-semibold tracking-tight text-slate-950">
-            Page not found.
-          </h1>
-          <p className="mt-4 text-base leading-8 text-slate-600">
-            The route you requested does not exist in the current frontend structure.
-          </p>
-          <Link to="/" className="mt-8 inline-flex">
-            <Button>Return Home</Button>
-          </Link>
-        </div>
+    <main className="flex min-h-screen items-center bg-ink-950 py-20 text-white">
+      <Container>
+        <span className="eyebrow">404 / A different direction</span>
+        <h1 className="display-title my-8">
+          Let's get you
+          <br />
+          back on track.
+        </h1>
+        <p className="mb-8 text-sm text-slate-300">
+          This page doesn't exist. Your next journey is waiting.
+        </p>
+        <Link to="/" className="cta">
+          Return to Energion <ArrowUpRight size={18} />
+        </Link>
       </Container>
-    </div>
+    </main>
   )
 }

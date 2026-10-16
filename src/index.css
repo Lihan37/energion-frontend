@@ -1,34 +1,47 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap');
 @import 'tailwindcss';
+@import './styles/fonts.css';
+@import './styles/public.css';
 
 @theme {
   --font-sans: 'Outfit', sans-serif;
-  --font-display: 'Outfit', sans-serif;
-  --color-brand-500: #2563eb;
-  --color-brand-300: #93c5fd;
-  --color-ink-950: #08111f;
-  --color-ink-900: #101b2d;
-  --color-ink-800: #1c2940;
-  --color-surface-50: #f6f9fc;
-  --color-surface-100: #eef3f8;
-  --color-surface-200: #dde7f1;
-  --color-surface-300: #cad6e3;
+  --font-display: 'Barlow Condensed', sans-serif;
+  --color-brand-500: #b7d234;
+  --color-brand-300: #d4e68b;
+  --color-ink-950: #080a08;
+  --color-ink-900: #141714;
+  --color-ink-800: #252b24;
+  --color-surface-50: #f6f7f3;
+  --color-surface-100: #ebeee6;
+  --color-surface-200: #dce1d5;
+  --color-surface-300: #c4ccba;
+  --color-slate-950: #080a08;
+  --color-slate-900: #141714;
+  --color-slate-800: #252b24;
+  --color-slate-700: #3c4539;
+  --color-slate-600: #596151;
+  --color-slate-500: #68715f;
+  --color-slate-400: #89927f;
+  --color-slate-300: #c1c8b9;
+  --color-slate-200: #dce1d5;
+  --color-slate-100: #ebeee6;
+  --color-slate-50: #f6f7f3;
 }
 
 :root {
-  --brand-start: #2563eb;
-  --brand-end: #93c5fd;
-  --brand-gradient: linear-gradient(135deg, #1e3a8a, #60a5fa);
-  --surface: #f5f8fb;
+  --brand-start: #b7d234;
+  --brand-end: #d4e68b;
+  --brand-gradient: #b7d234;
+  --surface: #f6f7f3;
   --surface-strong: #ffffff;
-  --ink: #08111f;
-  --muted: #5c6b80;
+  --ink: #080a08;
+  --muted: #596151;
+  --motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
   --line: rgba(16, 27, 45, 0.08);
   --line-strong: rgba(16, 27, 45, 0.16);
   --shadow-soft: 0 20px 60px rgba(8, 17, 31, 0.08);
   --shadow-card: 0 16px 40px rgba(18, 34, 62, 0.08);
   color: var(--ink);
-  background: #f3f7fb;
+  background: #f6f7f3;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -50,10 +63,7 @@ html {
 body {
   margin: 0;
   min-width: 320px;
-  background:
-    radial-gradient(circle at top left, rgba(151, 204, 164, 0.18), transparent 28%),
-    radial-gradient(circle at top right, rgba(49, 94, 230, 0.12), transparent 26%),
-    linear-gradient(180deg, #f8fbff 0%, #eff4f9 100%);
+  background: var(--surface);
   color: var(--ink);
   font-family: var(--font-sans);
 }
@@ -75,27 +85,25 @@ select {
 }
 
 ::selection {
-  background: rgba(49, 94, 230, 0.18);
+  background: #b7d234;
+  color: #080a08;
 }
 
 .bg-brand-gradient {
   background: var(--brand-gradient);
+  color: var(--ink);
 }
 
 .text-brand-gradient {
-  background: var(--brand-gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: #596b0a;
 }
 
 .border-brand-soft {
-  border-color: rgba(49, 94, 230, 0.18);
+  border-color: rgba(183, 210, 52, 0.32);
 }
 
 .surface-card {
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(20px);
+  background: #fff;
 }
 
 .grid-fade::before {

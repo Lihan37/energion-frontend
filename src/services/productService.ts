@@ -1,6 +1,6 @@
 import { apiClient } from './apiClient'
-import { products as fallbackProducts } from '../data/products'
-import type { Product, ProductSpec } from '../types/product'
+import { toPublicProduct } from '../lib/productPresentation'
+import type { Product, ProductImage, ProductSpec } from '../types/product'
 
 interface ProductPayload {
   name: string
@@ -17,6 +17,9 @@ interface ProductPayload {
   featured?: boolean
   tag?: string
   removeImage?: boolean
+  images?: ProductImage[]
+  primaryImageUrl?: string
+  published?: boolean
   specs: ProductSpec[]
 }
 
@@ -32,13 +35,8 @@ function createProductFormData(payload: ProductPayload, imageFile?: File | null)
 }
 
 export async function getProducts() {
-  try {
-    const { data } = await apiClient.get<{ products: Product[] }>('/products')
-    return data.products
-  } catch (error) {
-    console.warn('Falling back to local product data because the backend products API is unavailable.', error)
-    return fallbackProducts
-  }
+  const { data } = await apiClient.get<{ products: Product[] }>('/products')
+  return data.products.filter((product) => product.published !== false).map(toPublicProduct)
 }
 
 export async function getAdminProducts() {
@@ -47,11 +45,18 @@ export async function getAdminProducts() {
 }
 
 export async function createProduct(payload: ProductPayload, imageFile: File) {
-  const { data } = await apiClient.post<{ product: Product }>('/admin/products', createProductFormData(payload, imageFile))
+  const { data } = await apiClient.post<{ product: Product }>(
+    '/admin/products',
+    createProductFormData(payload, imageFile),
+  )
   return data.product
 }
 
-export async function updateProduct(productId: string, payload: ProductPayload, imageFile?: File | null) {
+export async function updateProduct(
+  productId: string,
+  payload: ProductPayload,
+  imageFile?: File | null,
+) {
   const { data } = await apiClient.put<{ product: Product }>(
     `/admin/products/${productId}`,
     createProductFormData(payload, imageFile),

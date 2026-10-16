@@ -8,7 +8,7 @@ import { z } from 'zod'
 import { Button } from '../components/ui/Button'
 import { Container } from '../components/ui/Container'
 import { Input } from '../components/ui/Input'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../context/auth-store'
 
 const loginSchema = z.object({
   phone: z.string().min(8, 'Enter a valid phone number'),
@@ -60,9 +60,10 @@ export function AuthPage() {
   })
 
   return (
-    <div className="flex min-h-screen items-center py-12">
+    <div className="flex min-h-[75vh] items-center py-12">
       <Container className="flex justify-center">
-        <div className="surface-card w-full max-w-3xl rounded-[2.5rem] border border-white/40 p-6 shadow-[0_24px_80px_rgba(8,17,31,0.22)] sm:p-8">
+        <div className="surface-card w-full max-w-xl rounded-lg border border-black/10 p-6 sm:p-8">
+          <span className="eyebrow mb-6">Your Energion account</span>
           <div className="flex flex-wrap gap-3 rounded-full border border-[rgba(16,27,45,0.08)] bg-slate-50 p-2">
             {(['login', 'signup'] as const).map((tab) => (
               <button
@@ -83,13 +84,13 @@ export function AuthPage() {
           </div>
 
           <div className="mt-8 max-w-lg">
-            <h2 className="font-display text-3xl font-semibold tracking-tight text-slate-950">
+            <h1 className="font-display text-4xl font-semibold uppercase text-slate-950">
               {activeTab === 'login' ? 'Welcome back' : 'Create your account'}
-            </h2>
+            </h1>
             <p className="mt-3 text-sm leading-7 text-slate-600">
               {activeTab === 'login'
                 ? 'Use your phone number and password to continue.'
-                : 'Sign up once. Admin access is assigned automatically by approved phone numbers.'}
+                : 'Create an account and start your Energion journey.'}
             </p>
           </div>
 
