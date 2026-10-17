@@ -57,7 +57,18 @@ all twenty existing product images. It also verifies every decorative image and
 checks the catalog response is unchanged after review. Screenshots and results
 are stored in ignored `artifacts/model-pages`.
 
-Production verification and release references will be recorded after deployment.
+## Production release
+
+- Frontend code commit: `2270f09`, pushed to `main`.
+- Netlify production deployment: `6ad3516d2b5f432141a1ba1e`.
+- Primary site: `https://energion-emobility.com`.
+- Live Chrome verification: **9 product pages, 20 decoded product images,
+  9 decorative images**, and all four requested screen widths passed.
+- Direct product reloads passed on the primary site; the Netlify alias also
+  returns the correct SPA entry for `/products/evox`.
+- No uncaught page errors or public prices were observed.
+- The public catalog response was identical before and after the read-only review.
+- The unchanged Railway API reports health `ok`.
 
 ## Remaining limitations
 
