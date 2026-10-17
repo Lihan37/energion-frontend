@@ -2,19 +2,17 @@ import { useQuery } from '@tanstack/react-query'
 import { Search } from 'lucide-react'
 import { useDeferredValue, useState } from 'react'
 import { ProductCard } from '../components/product/ProductCard'
-import { ProductModal } from '../components/product/ProductModal'
 import { Container } from '../components/ui/Container'
 import { CatalogState } from '../components/ui/CatalogState'
 import { Reveal } from '../components/ui/Reveal'
 import { EnquiryCTA } from '../components/shared/EnquiryCTA'
 import { getProducts } from '../services/productService'
-import type { PublicProduct } from '../lib/productPresentation'
+import { CampaignIntro } from '../components/campaign/CampaignIntro'
 
 export function ProductsPage() {
   const [search, setSearch] = useState('')
   const deferredSearch = useDeferredValue(search)
   const [category, setCategory] = useState('All')
-  const [selected, setSelected] = useState<PublicProduct | null>(null)
   const query = useQuery({ queryKey: ['products'], queryFn: getProducts })
   const products = query.data ?? []
   const categories = ['All', ...new Set(products.map((product) => product.category))]
@@ -29,18 +27,13 @@ export function ProductsPage() {
   return (
     <>
       <Container>
-        <div className="page-intro">
-          <span className="eyebrow">The Energion collection</span>
-          <h1 className="display-title">
-            Find your
-            <br />
-            kind of electric.
-          </h1>
-          <p className="body-copy">
-            City streets. New routes. Everyday adventures. Meet the lineup and discover the ride
-            that moves you.
-          </p>
-        </div>
+        <CampaignIntro
+          eyebrow="The Energion collection"
+          index="01"
+          tone="black"
+          lines={['Find your', 'kind of electric.']}
+          description="City streets. New routes. Everyday adventures. Meet the lineup and discover the ride that moves you."
+        />
         <div className="catalog-tools">
           <div className="filter-tabs" aria-label="Filter by category">
             {categories.map((item) => (
@@ -69,7 +62,7 @@ export function ProductsPage() {
           <div className="grid auto-rows-fr gap-5 md:grid-cols-2 xl:grid-cols-3">
             {filtered.map((product, index) => (
               <Reveal key={product.id} delay={Math.min(index * 0.05, 0.2)} className="h-full">
-                <ProductCard product={product} onOpen={setSelected} />
+                <ProductCard product={product} />
               </Reveal>
             ))}
           </div>
@@ -92,11 +85,6 @@ export function ProductsPage() {
           <EnquiryCTA />
         </div>
       </Container>
-      <ProductModal
-        product={selected}
-        isOpen={Boolean(selected)}
-        onClose={() => setSelected(null)}
-      />
     </>
   )
 }

@@ -26,6 +26,15 @@ export function VehicleImage({
   return (
     <img
       src={productImageUrl(src, width)}
+      srcSet={
+        src.includes('res.cloudinary.com/')
+          ? [360, 700, 1000, 1400]
+              .filter((size) => size <= width)
+              .map((size) => `${productImageUrl(src, size)} ${size}w`)
+              .join(', ')
+          : undefined
+      }
+      sizes="(max-width: 767px) 90vw, (max-width: 1023px) 50vw, 700px"
       alt={alt || `${name} electric vehicle`}
       loading={eager ? 'eager' : 'lazy'}
       fetchPriority={eager ? 'high' : 'auto'}

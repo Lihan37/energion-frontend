@@ -8,6 +8,11 @@ import { AdminIndexRedirect } from '../pages/admin/AdminIndexRedirect'
 export const router = createBrowserRouter([
   {
     path: '/',
+    hydrateFallbackElement: (
+      <div className="route-pending" role="status">
+        ENERGION <span>Preparing your next direction...</span>
+      </div>
+    ),
     element: <MainLayout />,
     children: [
       {
@@ -20,6 +25,12 @@ export const router = createBrowserRouter([
         path: 'products',
         lazy: async () => ({
           Component: (await import('../pages/ProductsPage')).ProductsPage,
+        }),
+      },
+      {
+        path: 'products/:slug',
+        lazy: async () => ({
+          Component: (await import('../pages/ProductDetailsPage')).ProductDetailsPage,
         }),
       },
       {
@@ -62,6 +73,11 @@ export const router = createBrowserRouter([
   },
   {
     path: '/admin',
+    hydrateFallbackElement: (
+      <div className="route-pending" role="status">
+        ENERGION <span>Opening your workspace...</span>
+      </div>
+    ),
     element: <AdminLayout />,
     children: [
       {

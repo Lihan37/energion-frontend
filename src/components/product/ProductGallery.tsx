@@ -1,9 +1,11 @@
 import { useState } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 import type { PublicProduct } from '../../lib/productPresentation'
 import { productImageUrl } from '../../lib/productPresentation'
 import { VehicleImage } from './VehicleImage'
 
 export function ProductGallery({ product }: { product: PublicProduct }) {
+  const reduced = useReducedMotion()
   const images = product.images ?? []
   const [selected, setSelected] = useState(
     Math.max(
@@ -15,8 +17,20 @@ export function ProductGallery({ product }: { product: PublicProduct }) {
   if (!image) return null
   return (
     <div aria-label={`${product.name} image gallery`}>
-      <div className="detail-visual">
-        <VehicleImage src={image.url} name={product.name} alt={image.alt} eager />
+      <motion.div
+        key={image.url}
+        className="detail-visual"
+        initial={reduced ? false : { opacity: 0.5 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: reduced ? 0 : 0.3 }}
+      >
+        <VehicleImage src={image.url} name={product.name} alt={image.alt} eager width={1400} />
+      </motion.div>
+      <div className="gallery-view-label" aria-live="polite">
+        <span>{image.colour || product.name}</span>
+        <span>
+          {String(selected + 1).padStart(2, '0')} / {String(images.length).padStart(2, '0')}
+        </span>
       </div>
       {image.caption && (
         <p className="mt-3 text-xs text-slate-600" aria-live="polite">

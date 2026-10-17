@@ -1,0 +1,506 @@
+.campaign-scenes {
+  padding-block: clamp(60px, 7vw, 100px);
+  background: #f6f7f3;
+}
+.campaign-scene-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  align-items: start;
+}
+.campaign-scene-grid > :nth-child(2) {
+  margin-top: 70px;
+}
+.campaign-photo-panel {
+  margin: 0;
+  min-width: 0;
+  background: #0a0a0a;
+  color: #fff;
+  overflow: hidden;
+}
+.campaign-photo-panel img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  display: block;
+}
+.campaign-photo-panel figcaption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+}
+.campaign-photo-panel figcaption > span:first-child {
+  font: 500 clamp(20px, 2vw, 28px)/1.1 var(--font-display);
+  text-transform: uppercase;
+}
+.campaign-photo-panel figcaption > span:last-child {
+  max-width: 75px;
+  color: #b7d234;
+  font-size: 7px;
+  line-height: 1.8;
+  letter-spacing: 0.1em;
+  text-align: right;
+}
+.scenes-about {
+  background: #fff;
+}
+.contact-campaign-photo {
+  margin-top: 2rem;
+  max-width: 380px;
+}
+.dealer-campaign-story,
+.journal-campaign-story {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 6vw, 6rem);
+  align-items: center;
+  margin-bottom: 4rem;
+}
+.dealer-campaign-story .campaign-photo-panel {
+  max-width: 410px;
+}
+.journal-campaign-story {
+  background: #0a0a0a;
+  color: #fff;
+  padding: clamp(24px, 4vw, 56px);
+}
+.journal-campaign-story .body-copy {
+  color: #c1c8b9;
+  margin-top: 1.5rem;
+}
+.journal-campaign-story .eyebrow {
+  color: #b7d234;
+  margin-bottom: 1.5rem;
+}
+.journal-campaign-story .campaign-photo-panel {
+  max-width: 300px;
+  margin-left: auto;
+}
+.dealer-campaign-story .body-copy {
+  margin-top: 1.5rem;
+}
+.dealer-campaign-story .eyebrow {
+  margin-bottom: 1.5rem;
+}
+.vehicle-card-footer .model-detail-link {
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: #0a0a0a;
+  font-weight: 600;
+  border: 0;
+  transition: gap 0.3s;
+}
+.vehicle-card-footer .model-detail-link:hover {
+  gap: 16px;
+}
+.model-page {
+  background: #fff;
+}
+.model-page-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: #0a0a0a;
+  color: #fff;
+  padding-block: 24px 64px;
+}
+.model-page-hero .energy-graphic {
+  width: 38%;
+  left: auto;
+  color: #b7d23430;
+  z-index: -1;
+}
+.model-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 9px;
+  color: #c1c8b9;
+  padding-block: 16px 40px;
+}
+.model-breadcrumb a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 32px;
+}
+.model-breadcrumb a:hover {
+  color: #b7d234;
+}
+.model-page-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 40px;
+}
+.model-page-heading > div {
+  min-width: 0;
+}
+.model-page-heading .eyebrow {
+  color: #b7d234;
+}
+.model-page-heading h1 {
+  font-size: clamp(90px, 12vw, 174px);
+  margin: 24px 0;
+  overflow-wrap: anywhere;
+}
+.model-page-heading p {
+  font-size: 14px;
+  line-height: 1.9;
+  max-width: 560px;
+  color: #c1c8b9;
+}
+.model-page-heading > a {
+  flex-shrink: 0;
+}
+.model-page-nav {
+  position: sticky;
+  top: 80px;
+  z-index: 30;
+  background: #fff;
+  border-bottom: 1px solid #0a0a0a30;
+}
+.model-page-nav nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 4vw, 56px);
+}
+.model-page-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding-block: 22px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  min-height: 48px;
+}
+.model-page-nav a:hover {
+  box-shadow: inset 0 -3px #b7d234;
+}
+.model-page-nav a:last-child {
+  margin-left: auto;
+  font-weight: 600;
+}
+.model-page :is(#model-gallery, #model-overview, #model-specifications) {
+  scroll-margin-top: 165px;
+}
+.model-page-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(0, 0.85fr);
+  gap: clamp(24px, 5vw, 70px);
+  align-items: center;
+}
+.model-page-photos {
+  min-width: 0;
+}
+.model-page .detail-visual {
+  height: clamp(420px, 43vw, 600px);
+  background: #b7d234;
+  border-radius: 0;
+}
+.model-page[data-category='adventure'] .detail-visual {
+  background: #ebeee6;
+}
+.model-page[data-category='cargo'] .detail-visual {
+  background: #f6f7f3;
+}
+.model-page .detail-visual img {
+  padding: 30px;
+}
+.model-page .image-placeholder {
+  color: #252b24;
+}
+.model-page .gallery-thumbnail {
+  width: 88px;
+  height: 76px;
+  border-radius: 0;
+}
+.model-page-glance {
+  min-width: 0;
+}
+.model-page-glance h2 {
+  font: 600 clamp(38px, 4vw, 58px)/1 var(--font-display);
+  text-transform: uppercase;
+  margin: 24px 0;
+}
+.model-page-glance .spec-highlight dd {
+  font-size: 17px;
+}
+.model-page-colours {
+  margin-block: 24px;
+}
+.model-page-colours h3 {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+.model-page-colours ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+  list-style: none;
+  padding: 0;
+}
+.model-page-colours li {
+  font-size: 11px;
+  border: 1px solid #0a0a0a35;
+  padding: 10px 14px;
+}
+.model-gallery-note {
+  font-size: 11px;
+  line-height: 1.8;
+  color: #596151;
+  margin-top: 24px;
+}
+.model-spec-pending {
+  font-size: 13px;
+  line-height: 1.9;
+  color: #596151;
+  padding: 20px 0;
+  border-block: 1px solid #0a0a0a30;
+}
+.model-page-overview {
+  background: #0a0a0a;
+  color: #fff;
+}
+.model-page-story {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(32px, 8vw, 100px);
+  align-items: center;
+}
+.model-page-story .eyebrow {
+  color: #b7d234;
+  margin-bottom: 24px;
+}
+.model-page-story .campaign-heading {
+  font-size: clamp(50px, 6vw, 80px);
+}
+.model-page-story h2 {
+  font: 500 36px/1.1 var(--font-display);
+  margin-bottom: 24px;
+}
+.model-page-story p {
+  font-size: 14px;
+  line-height: 2;
+  color: #c1c8b9;
+  margin-bottom: 24px;
+}
+.model-spec-count {
+  font-size: 10px;
+  color: #596151;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.model-page-spec-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid #0a0a0a30;
+  border-left: 1px solid #0a0a0a30;
+}
+.model-page-spec-grid > div {
+  position: relative;
+  padding: 32px;
+  border-bottom: 1px solid #0a0a0a30;
+  border-right: 1px solid #0a0a0a30;
+  min-width: 0;
+  transition: background 0.3s;
+}
+.model-page-spec-grid > div:hover {
+  background: #eff3df;
+}
+.model-page-spec-grid span {
+  font-size: 9px;
+  color: #596151;
+  display: block;
+  margin-bottom: 24px;
+}
+.model-page-spec-grid dt {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: #596151;
+  margin-bottom: 12px;
+}
+.model-page-spec-grid dd {
+  font-size: 16px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.model-page-spec-note {
+  background: #f6f7f3;
+  border-top: 3px solid #b7d234;
+  padding: clamp(24px, 4vw, 48px);
+}
+.model-page-spec-note h3 {
+  font: 500 38px/1 var(--font-display);
+  text-transform: uppercase;
+}
+.model-page-spec-note p {
+  color: #596151;
+  font-size: 14px;
+  line-height: 1.9;
+  max-width: 650px;
+  margin-block: 24px;
+}
+.model-page-enquiry {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: #b7d234;
+  color: #0a0a0a;
+  padding-block: 72px;
+}
+.model-page-enquiry .energy-graphic {
+  width: 45%;
+  left: auto;
+  z-index: -1;
+  color: #0a0a0a30;
+}
+.model-page-enquiry .campaign-heading {
+  margin-block: 24px 32px;
+}
+.model-page-enquiry .cta {
+  background: #0a0a0a;
+  color: #fff;
+}
+.model-page-enquiry .model-actions {
+  align-items: center;
+}
+@media (max-width: 1023px) {
+  .model-page-stage {
+    grid-template-columns: 1.25fr 1fr;
+    gap: 24px;
+  }
+  .model-page-heading {
+    display: block;
+  }
+  .model-page-heading > a {
+    margin-top: 24px;
+  }
+  .model-page-spec-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .model-page-story {
+    gap: 32px;
+  }
+  .model-page-glance .spec-highlight dd {
+    font-size: 14px;
+  }
+}
+@media (max-width: 767px) {
+  .campaign-scene-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .campaign-scene-grid > :nth-child(2) {
+    margin: 0;
+  }
+  .campaign-photo-panel img {
+    aspect-ratio: 4 / 5;
+    object-position: center;
+  }
+  .campaign-scenes .section-topline {
+    gap: 24px;
+  }
+  .contact-campaign-photo {
+    max-width: none;
+  }
+  .dealer-campaign-story,
+  .journal-campaign-story {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .dealer-campaign-story .campaign-photo-panel,
+  .journal-campaign-story .campaign-photo-panel {
+    max-width: none;
+    width: 100%;
+  }
+  .model-page-hero {
+    padding-block: 12px 36px;
+  }
+  .model-breadcrumb {
+    padding-bottom: 24px;
+  }
+  .model-page-heading h1 {
+    font-size: clamp(64px, 19vw, 106px);
+  }
+  .model-page-heading p {
+    font-size: 12px;
+  }
+  .model-page-heading .eyebrow {
+    font-size: 8px;
+    letter-spacing: 0.13em;
+  }
+  .model-page-nav {
+    top: 72px;
+  }
+  .model-page-nav nav {
+    gap: 16px;
+  }
+  .model-page-nav a {
+    font-size: 8px;
+    letter-spacing: 0;
+    padding-block: 18px;
+  }
+  .model-page-nav a:last-child {
+    gap: 4px;
+  }
+  .model-page-nav a:last-child svg {
+    display: none;
+  }
+  .model-page-stage,
+  .model-page-story {
+    grid-template-columns: 1fr;
+  }
+  .model-page .detail-visual {
+    height: 350px;
+  }
+  .model-page .detail-visual img {
+    padding: 20px;
+  }
+  .model-page .gallery-thumbnail {
+    width: 72px;
+    height: 64px;
+  }
+  .model-page-glance {
+    padding-top: 24px;
+  }
+  .model-page-glance h2 {
+    font-size: 44px;
+  }
+  .model-page-story .campaign-heading {
+    font-size: 48px;
+  }
+  .model-page-story p {
+    font-size: 13px;
+  }
+  .model-page-spec-grid > div {
+    padding: 20px 14px;
+  }
+  .model-page-spec-grid dd {
+    font-size: 13px;
+  }
+  .model-page-spec-grid dt {
+    font-size: 9px;
+  }
+  .model-page-spec-count {
+    font-size: 8px;
+  }
+  .model-page-spec-note h3 {
+    font-size: 30px;
+  }
+  .model-page-enquiry {
+    padding-block: 48px;
+  }
+}

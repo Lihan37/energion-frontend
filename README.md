@@ -29,6 +29,10 @@ No production records are modified by the test suite.
 
 ## Redesign review
 
+The second campaign enhancement pass is documented in [the campaign report](docs/CAMPAIGN-PASS.md).
+The follow-up adds dedicated model URLs and supplied decorative campaign artwork;
+see [the model-page release report](docs/MODEL-PAGES-RELEASE.md).
+
 See [the implementation and QA report](docs/REDESIGN.md) for all updated routes,
 the design system, public pricing policy, accessibility, service limitations,
 screenshots and release notes.

@@ -3,17 +3,14 @@ import { Link } from 'react-router-dom'
 import { navItems, siteConfig } from '../../constants/site'
 import logo from '../../assets/Energion Mobility logo-01.png'
 import { Container } from '../ui/Container'
+import { CampaignHeading } from '../campaign/CampaignHeading'
 
 export function Footer() {
   return (
     <footer className="site-footer">
       <Container>
         <div className="footer-top">
-          <h2>
-            Move forward.
-            <br />
-            <span className="text-brand-500">Leave less behind.</span>
-          </h2>
+          <CampaignHeading lines={['Move forward.', 'Leave less behind.']} />
           <Link to="/products" className="cta cta-outline">
             Explore our bikes <ArrowUpRight size={18} />
           </Link>

@@ -1,5 +1,7 @@
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import { getProducts } from '../../services/productService'
 
 const metadata: Record<string, [string, string]> = {
   '/': [
@@ -28,11 +30,27 @@ const metadata: Record<string, [string, string]> = {
 
 export function PageMetadata() {
   const { pathname } = useLocation()
+  const isModel = pathname.startsWith('/products/')
+  const query = useQuery({ queryKey: ['products'], queryFn: getProducts, enabled: isModel })
+  let slug = ''
+  try {
+    slug = decodeURIComponent(pathname.slice('/products/'.length))
+  } catch {
+    /* Invalid URL gets the unavailable-model state. */
+  }
+  const product = isModel ? query.data?.find((item) => item.slug === slug) : undefined
   useEffect(() => {
-    const [title, description] = metadata[pathname] ?? [
-      'Energion journal',
-      'Electric mobility stories from Energion E-Mobility.',
-    ]
+    const [title, description] = product
+      ? [product.name, product.shortDescription]
+      : isModel
+        ? [
+            'Model details',
+            'Explore the Energion electric vehicle collection and find your next ride.',
+          ]
+        : (metadata[pathname] ?? [
+            'Energion journal',
+            'Electric mobility stories from Energion E-Mobility.',
+          ])
     document.title = `${title} | Energion E-Mobility`
     const setMeta = (key: string, value: string, property = false) => {
       const attribute = property ? 'property' : 'name'
@@ -48,6 +66,8 @@ export function PageMetadata() {
     setMeta('og:title', document.title, true)
     setMeta('og:description', description, true)
     setMeta('og:url', `https://energion-emobility.com${pathname}`, true)
+    setMeta('og:image', product?.image || 'https://energion-emobility.com/favicon.png', true)
+    setMeta('robots', isModel && query.isSuccess && !product ? 'noindex, follow' : 'index, follow')
     let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]')
     if (!canonical) {
       canonical = document.createElement('link')
@@ -55,6 +75,6 @@ export function PageMetadata() {
       document.head.append(canonical)
     }
     canonical.href = `https://energion-emobility.com${pathname}`
-  }, [pathname])
+  }, [pathname, product, isModel, query.isSuccess])
   return null
 }

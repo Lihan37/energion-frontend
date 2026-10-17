@@ -5,6 +5,9 @@ import { BlogCard } from '../components/blog/BlogCard'
 import { Container } from '../components/ui/Container'
 import { CatalogState } from '../components/ui/CatalogState'
 import { getBlogs } from '../services/blogService'
+import { CampaignIntro } from '../components/campaign/CampaignIntro'
+import { CampaignPhotoPanel } from '../components/campaign/CampaignScenes'
+import { campaignPhotos } from '../constants/campaignPhotos'
 
 export function BlogPage() {
   const [search, setSearch] = useState('')
@@ -20,17 +23,13 @@ export function BlogPage() {
   )
   return (
     <Container>
-      <div className="page-intro">
-        <span className="eyebrow">The Energion journal</span>
-        <h1 className="display-title">
-          Ideas in
-          <br />
-          motion.
-        </h1>
-        <p className="body-copy">
-          Explore electric mobility, get to know your ride and discover a different way forward.
-        </p>
-      </div>
+      <CampaignIntro
+        eyebrow="The Energion journal"
+        index="05"
+        tone="black"
+        lines={['Ideas in', 'motion.']}
+        description="Explore electric mobility, get to know your ride and discover a different way forward."
+      />
       <div className="catalog-tools">
         <div className="filter-tabs">
           {categories.map((item) => (
@@ -49,6 +48,20 @@ export function BlogPage() {
             placeholder="Find a story"
           />
         </label>
+      </div>
+      <div className="journal-campaign-story">
+        <div>
+          <span className="eyebrow">A different energy</span>
+          <h2 className="section-title">
+            Everyday moments.
+            <br />
+            New perspectives.
+          </h2>
+          <p className="body-copy">
+            Ideas, people and journeys. Discover more of the electric mindset.
+          </p>
+        </div>
+        <CampaignPhotoPanel photo={campaignPhotos.moments} />
       </div>
       <div className="pb-20">
         {query.isPending || query.isError ? (

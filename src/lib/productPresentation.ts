@@ -18,6 +18,10 @@ export function enquiryUrl(product: PublicProduct) {
   return `/contact?model=${encodeURIComponent(product.name)}`
 }
 
+export function productUrl(product: Pick<PublicProduct, 'slug'>) {
+  return `/products/${encodeURIComponent(product.slug)}`
+}
+
 export function productMetrics(product: PublicProduct) {
   return [
     { label: 'Range', value: product.range },

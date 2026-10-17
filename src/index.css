@@ -1,6 +1,8 @@
 @import 'tailwindcss';
 @import './styles/fonts.css';
 @import './styles/public.css';
+@import './styles/campaign.css';
+@import './styles/model-pages.css';
 
 @theme {
   --font-sans: 'Outfit', sans-serif;
@@ -53,6 +55,7 @@
 }
 
 html {
+  position: relative;
   scroll-behavior: smooth;
   /* Reserve the scrollbar space so opening a modal / mobile menu
      (which locks body scroll) no longer shifts the whole page. */

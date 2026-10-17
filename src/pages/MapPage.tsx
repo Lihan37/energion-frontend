@@ -5,6 +5,9 @@ import { Container } from '../components/ui/Container'
 import { getDealers } from '../services/dealerService'
 import { CatalogState } from '../components/ui/CatalogState'
 import { EnquiryCTA } from '../components/shared/EnquiryCTA'
+import { CampaignIntro } from '../components/campaign/CampaignIntro'
+import { CampaignPhotoPanel } from '../components/campaign/CampaignScenes'
+import { campaignPhotos } from '../constants/campaignPhotos'
 
 export function MapPage() {
   const query = useQuery({ queryKey: ['dealers'], queryFn: getDealers })
@@ -15,18 +18,13 @@ export function MapPage() {
   const filtered = dealers.filter((dealer) => dealer.region === current)
   return (
     <Container>
-      <div className="page-intro">
-        <span className="eyebrow">Closer to your next ride</span>
-        <h1 className="display-title">
-          Find your
-          <br />
-          Energion.
-        </h1>
-        <p className="body-copy">
-          Discover dealer points across Bangladesh. Choose your region and find a place to begin
-          your electric journey.
-        </p>
-      </div>
+      <CampaignIntro
+        eyebrow="Closer to your next ride"
+        index="04"
+        tone="lime"
+        lines={['Find your', 'Energion.']}
+        description="Discover dealer points across Bangladesh. Choose your region and find a place to begin your electric journey."
+      />
       {query.isPending || query.isError ? (
         <CatalogState error={query.isError} retry={() => void query.refetch()} />
       ) : (
@@ -77,6 +75,20 @@ export function MapPage() {
         </div>
       )}
       <div className="pb-16">
+        <div className="dealer-campaign-story">
+          <CampaignPhotoPanel photo={campaignPhotos.cityPause} />
+          <div>
+            <span className="eyebrow">Your next stop</span>
+            <h2 className="section-title">
+              Meet electric.
+              <br />
+              Meet Energion.
+            </h2>
+            <p className="body-copy">
+              Explore our dealer points and talk to our team about the ride that fits your everyday.
+            </p>
+          </div>
+        </div>
         <EnquiryCTA />
       </div>
     </Container>

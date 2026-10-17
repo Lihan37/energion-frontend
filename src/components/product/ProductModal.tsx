@@ -6,6 +6,8 @@ import { Modal } from '../ui/Modal'
 import { SpecificationHighlights } from './SpecificationHighlights'
 import { VehicleImage } from './VehicleImage'
 import { ProductGallery } from './ProductGallery'
+import { CampaignHeading } from '../campaign/CampaignHeading'
+import { EnergyGraphic } from '../campaign/EnergyGraphic'
 
 interface ProductModalProps {
   product: PublicProduct | null
@@ -17,7 +19,15 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
   if (!product) return null
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={product.name} className="product-dialog">
-      <div className="product-detail">
+      <div
+        className="product-detail campaign-detail"
+        data-category={product.category.toLowerCase()}
+      >
+        <div className="detail-campaign-banner">
+          <span className="eyebrow">Energion / {product.category}</span>
+          <span>ALL ELECTRIC. ALL YOURS.</span>
+          <EnergyGraphic />
+        </div>
         <div className="detail-top">
           <div>
             {product.images?.length ? (
@@ -34,7 +44,7 @@ export function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
               {product.category}
               {product.tag ? ` / ${product.tag}` : ''}
             </span>
-            <h2 className="detail-name">{product.name}</h2>
+            <CampaignHeading lines={[product.name]} className="detail-name" />
             <p className="detail-copy">{product.description}</p>
             {product.colors.length > 0 && (
               <>

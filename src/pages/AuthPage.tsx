@@ -60,7 +60,7 @@ export function AuthPage() {
   })
 
   return (
-    <div className="flex min-h-[75vh] items-center py-12">
+    <div className="account-campaign flex min-h-[75vh] items-center py-12">
       <Container className="flex justify-center">
         <div className="surface-card w-full max-w-xl rounded-lg border border-black/10 p-6 sm:p-8">
           <span className="eyebrow mb-6">Your Energion account</span>

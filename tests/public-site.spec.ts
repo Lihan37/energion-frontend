@@ -19,9 +19,17 @@ async function mockCatalog(page: Page) {
 async function noPrices(page: Page) {
   const markup = await page.content()
   expect(markup).not.toMatch(/starting price|Tk\s?[\d,]+|BDT\s?[\d,]+|"offers"\s*:/i)
+  // Motion transform decimals are not business content and can coincidentally
+  // contain a price's digits. Check visible content and SEO values explicitly.
+  const text = await page.locator('body').innerText()
+  const metadata = await page
+    .locator('meta[content], script[type="application/ld+json"]')
+    .evaluateAll((nodes) =>
+      nodes.map((node) => node.getAttribute('content') ?? node.textContent ?? '').join(' '),
+    )
   for (const product of fixture.products) {
-    expect(markup).not.toContain(product.price.toLocaleString('en-US'))
-    expect(markup).not.toContain(String(product.price))
+    expect(`${text} ${metadata}`).not.toContain(product.price.toLocaleString('en-US'))
+    expect(`${text} ${metadata}`).not.toMatch(new RegExp(`\\b${product.price}\\b`))
   }
 }
 
@@ -35,22 +43,25 @@ test('public projection removes pricing while retaining real specifications', ()
   }
 })
 
-test('catalog filters, every model quick view, full images and enquiry context', async ({
-  page,
-}) => {
+test('catalog filters, every model page, full images and enquiry context', async ({ page }) => {
   await mockCatalog(page)
   const errors: string[] = []
   page.on('pageerror', (error) => errors.push(error.message))
   await page.goto('/products')
   await expect(page.locator('.vehicle-card')).toHaveCount(fixture.products.length)
   for (const product of fixture.products) {
-    await page.getByRole('button', { name: `Explore ${product.name}`, exact: true }).click()
-    const dialog = page.getByRole('dialog')
-    await expect(dialog).toBeVisible()
-    await expect(dialog.getByRole('heading', { name: product.name, exact: true })).toBeVisible()
-    await expect(dialog.getByText(product.range, { exact: true })).toBeVisible()
-    await expect(dialog.locator('.detail-visual')).toBeVisible()
-    const fit = await dialog.locator('.detail-visual').evaluate((container) => {
+    await page.getByRole('link', { name: `Explore ${product.name}`, exact: true }).click()
+    const detail = page.locator('.model-page')
+    await expect(page).toHaveURL(new RegExp(`/products/${product.slug}$`))
+    await expect(page.getByRole('dialog')).toHaveCount(0)
+    await expect(
+      detail.getByRole('heading', { name: product.name, exact: true, level: 1 }),
+    ).toBeVisible()
+    await expect(
+      detail.locator('.model-page-glance').getByText(product.range, { exact: true }),
+    ).toBeVisible()
+    await expect(detail.locator('.detail-visual')).toBeVisible()
+    const fit = await detail.locator('.detail-visual').evaluate((container) => {
       const image = container.querySelector('img')
       return image
         ? getComputedStyle(image).objectFit
@@ -59,21 +70,17 @@ test('catalog filters, every model quick view, full images and enquiry context',
           : ''
     })
     expect(fit).toBe('contain')
-    await expect(dialog.getByRole('link', { name: 'Enquire about this model' })).toHaveAttribute(
-      'href',
-      `/contact?model=${encodeURIComponent(product.name)}`,
-    )
-    await noPrices(page)
-    await page.keyboard.press('Escape')
-    await expect(dialog).toHaveCount(0)
     await expect(
-      page.getByRole('button', { name: `Explore ${product.name}`, exact: true }),
-    ).toBeFocused()
+      detail.getByRole('link', { name: 'Enquire about this model' }).first(),
+    ).toHaveAttribute('href', `/contact?model=${encodeURIComponent(product.name)}`)
+    await noPrices(page)
+    await page.getByRole('link', { name: 'All models', exact: true }).click()
+    await expect(page.locator('.vehicle-card')).toHaveCount(fixture.products.length)
   }
   await page.getByRole('searchbox', { name: 'Search models' }).fill('NEXO')
   await expect(page.locator('.vehicle-card')).toHaveCount(1)
-  await page.getByRole('button', { name: 'Explore NEXO' }).click()
-  await page.getByRole('link', { name: 'Enquire about this model' }).click()
+  await page.getByRole('link', { name: 'Explore NEXO' }).click()
+  await page.getByRole('link', { name: 'Enquire about this model' }).first().click()
   await expect(page.getByLabel('Model of interest (optional)')).toHaveValue('NEXO')
   await expect(page.getByRole('dialog')).toHaveCount(0)
   expect(await page.evaluate(() => document.body.style.overflow)).not.toBe('hidden')
@@ -112,6 +119,7 @@ for (const width of [320, 375, 390, 430, 768, 1024, 1440]) {
     for (const route of [
       '/',
       '/products',
+      '/products/jaguar',
       '/about',
       '/contact',
       '/map',
@@ -130,13 +138,14 @@ for (const width of [320, 375, 390, 430, 768, 1024, 1440]) {
       await noPrices(page)
     }
     await page.goto('/products')
-    await page.getByRole('button', { name: 'Explore JAGUAR', exact: true }).click()
-    const dialog = page.getByRole('dialog')
-    await expect(dialog.locator('.spec-highlights')).toHaveCSS('grid-template-columns', /\d+.*\d+/)
-    const bounds = await dialog.boundingBox()
-    expect(bounds!.y).toBeGreaterThanOrEqual(0)
-    expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(900)
-    expect(await dialog.evaluate((node) => node.scrollWidth <= node.clientWidth)).toBe(true)
+    await page.getByRole('link', { name: 'Explore JAGUAR', exact: true }).click()
+    const detail = page.locator('.model-page')
+    await expect(detail.locator('.model-page-glance .spec-highlights')).toHaveCSS(
+      'grid-template-columns',
+      /\d+.*\d+/,
+    )
+    expect(await detail.evaluate((node) => node.scrollWidth <= node.clientWidth)).toBe(true)
+    await expect(page.getByRole('dialog')).toHaveCount(0)
     expect(errors).toEqual([])
   })
 }
@@ -266,9 +275,9 @@ test('loaded vehicle images stay contained and broken sources have a readable fa
   const image = page.locator('.vehicle-card-visual img').first()
   await expect(image).toHaveCSS('object-fit', 'contain')
   await expect.poll(() => image.evaluate((node: HTMLImageElement) => node.naturalHeight)).toBe(800)
-  await page.getByRole('button', { name: 'Explore JAGUAR', exact: true }).click()
+  await page.getByRole('link', { name: 'Explore JAGUAR', exact: true }).click()
   await expect(page.locator('.detail-visual img')).toHaveCSS('object-fit', 'contain')
-  await page.keyboard.press('Escape')
+  await page.getByRole('link', { name: 'All models', exact: true }).click()
   await page.route('https://res.cloudinary.com/**', (route) =>
     route.fulfill({ status: 401, body: 'Unavailable' }),
   )
@@ -277,7 +286,7 @@ test('loaded vehicle images stay contained and broken sources have a readable fa
   await expect(page.locator('.vehicle-card-visual img')).toHaveCount(0)
 })
 
-test('major public pages and product modal have no WCAG AA accessibility violations', async ({
+test('major public pages and model page have no WCAG AA accessibility violations', async ({
   page,
 }) => {
   test.setTimeout(90000)
@@ -301,7 +310,8 @@ test('major public pages and product modal have no WCAG AA accessibility violati
     ).toEqual([])
   }
   await page.goto('/products')
-  await page.getByRole('button', { name: 'Explore JAGUAR', exact: true }).click()
+  await page.getByRole('link', { name: 'Explore JAGUAR', exact: true }).click()
+  await page.locator('.model-page').waitFor()
   const result = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
     .analyze()
@@ -341,8 +351,9 @@ test('capture desktop and mobile review screenshots', async ({ page }) => {
       if (name === 'home') await page.screenshot({ path: `artifacts/redesign/hero-${width}.png` })
     }
     await page.goto('/products')
-    await page.getByRole('button', { name: 'Explore JAGUAR', exact: true }).click()
-    await page.screenshot({ path: `artifacts/redesign/details-${width}.png` })
+    await page.getByRole('link', { name: 'Explore JAGUAR', exact: true }).click()
+    await page.locator('.model-page').waitFor()
+    await page.screenshot({ path: `artifacts/redesign/details-${width}.png`, fullPage: true })
   }
 })
 
@@ -376,10 +387,10 @@ test('archived models are excluded and gallery colours can be selected', async (
   )
   await page.goto('/products')
   await expect(page.locator('.vehicle-card')).toHaveCount(5)
-  await page.getByRole('button', { name: 'Explore NEXO', exact: true }).click()
+  await page.getByRole('link', { name: 'Explore NEXO', exact: true }).click()
   await page.getByRole('button', { name: 'View NEXO silver side view' }).click()
-  await expect(page.getByRole('dialog').getByText('Silver colourway')).toBeVisible()
-  await expect(page.getByRole('dialog').locator('.detail-visual img')).toHaveAttribute(
+  await expect(page.locator('.model-page').getByText('Silver colourway')).toBeVisible()
+  await expect(page.locator('.model-page .detail-visual img')).toHaveAttribute(
     'alt',
     'NEXO silver side view',
   )

@@ -1,15 +1,12 @@
 import { ArrowUpRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { CampaignHeading } from '../campaign/CampaignHeading'
 
 export function EnquiryCTA() {
   return (
     <div className="enquiry-band">
       <div>
-        <h2>
-          Your next chapter.
-          <br />
-          Make it electric.
-        </h2>
+        <CampaignHeading lines={['Your next chapter.', 'Make it electric.']} />
         <p>Find your Energion. Let our team help you choose.</p>
       </div>
       <Link className="cta" to="/contact">

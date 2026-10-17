@@ -10,6 +10,9 @@ import { Input } from '../components/ui/Input'
 import { Textarea } from '../components/ui/Textarea'
 import { siteConfig } from '../constants/site'
 import { submitContactMessage } from '../services/contactService'
+import { CampaignIntro } from '../components/campaign/CampaignIntro'
+import { CampaignPhotoPanel } from '../components/campaign/CampaignScenes'
+import { campaignPhotos } from '../constants/campaignPhotos'
 
 const schema = z.object({
   name: z.string().trim().min(2, 'Please enter your name'),
@@ -39,18 +42,12 @@ export function ContactPage() {
   const mutation = useMutation({ mutationFn: submitContactMessage })
   return (
     <Container>
-      <div className="page-intro">
-        <span className="eyebrow">Start a conversation</span>
-        <h1 className="display-title">
-          Your journey
-          <br />
-          starts here.
-        </h1>
-        <p className="body-copy">
-          A question about a model? Exploring electric for the first time? Our team is here to help
-          you take the next step.
-        </p>
-      </div>
+      <CampaignIntro
+        eyebrow="Start a conversation"
+        index="03"
+        lines={['Your journey', 'starts here.']}
+        description="A question about a model? Exploring electric for the first time? Our team is here to help you take the next step."
+      />
       <div className="contact-layout">
         <div>
           <dl className="contact-details">
@@ -83,6 +80,9 @@ export function ContactPage() {
             For model availability, dealership enquiries or help choosing your ride, contact our
             team directly.
           </p>
+          <div className="contact-campaign-photo">
+            <CampaignPhotoPanel photo={campaignPhotos.direction} />
+          </div>
         </div>
         <div className="contact-form">
           <h2 className="font-display text-3xl uppercase">Tell us what's on your mind.</h2>

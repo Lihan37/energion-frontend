@@ -6,6 +6,8 @@ import { Container } from '../components/ui/Container'
 import { Reveal } from '../components/ui/Reveal'
 import { EnquiryCTA } from '../components/shared/EnquiryCTA'
 import { getProducts } from '../services/productService'
+import { CampaignIntro } from '../components/campaign/CampaignIntro'
+import { CampaignScenes } from '../components/campaign/CampaignScenes'
 
 const values = [
   [
@@ -28,20 +30,15 @@ export function AboutPage() {
   return (
     <>
       <Container>
-        <div className="page-intro">
-          <span className="eyebrow">We are Energion</span>
-          <h1 className="display-title">
-            New energy.
-            <br />
-            Shared ambition.
-          </h1>
-          <p className="body-copy">
-            We believe the future of transportation should be cleaner, smarter and accessible to
-            everyone.
-          </p>
-        </div>
+        <CampaignIntro
+          eyebrow="We are Energion"
+          index="02"
+          tone="lime"
+          lines={['New energy.', 'Shared ambition.']}
+          description="We believe the future of transportation should be cleaner, smarter and accessible to everyone."
+        />
       </Container>
-      <section className="section-dark section-space">
+      <section className="section-dark section-space about-purpose">
         <Container>
           <div className="technology-layout">
             <Reveal>
@@ -105,7 +102,7 @@ export function AboutPage() {
           </section>
         </Reveal>
       </Container>
-      <section className="section-dark section-space">
+      <section className="section-space about-principles">
         <Container>
           <span className="eyebrow">Our principles</span>
           <h2 className="section-title mt-5">Progress with purpose.</h2>
@@ -127,6 +124,7 @@ export function AboutPage() {
           <EnquiryCTA />
         </div>
       </Container>
+      <CampaignScenes collection="about" />
     </>
   )
 }

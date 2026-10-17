@@ -113,10 +113,10 @@ export function Navbar() {
               aria-modal="true"
               aria-label="Mobile navigation"
               className="mobile-menu"
-              initial={{ opacity: 0, y: reduced ? 0 : -12 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={reduced ? false : { clipPath: 'inset(0 0 100% 0)' }}
+              animate={{ clipPath: 'inset(0 0 0% 0)' }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
+              transition={{ duration: reduced ? 0 : 0.45, ease: [0.16, 1, 0.3, 1] }}
             >
               <div className="mobile-menu-top">
                 <img

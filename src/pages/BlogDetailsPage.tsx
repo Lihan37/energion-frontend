@@ -6,6 +6,7 @@ import { Container } from '../components/ui/Container'
 import { CatalogState } from '../components/ui/CatalogState'
 import { SmoothImage } from '../components/ui/SmoothImage'
 import { getBlogBySlug } from '../services/blogService'
+import { CampaignHeading } from '../components/campaign/CampaignHeading'
 
 export function BlogDetailsPage() {
   const { slug = '' } = useParams()
@@ -39,14 +40,14 @@ export function BlogDetailsPage() {
   return (
     <Container>
       <article className="article-layout pb-20">
-        <div className="page-intro">
+        <div className="page-intro article-campaign-intro">
           <Link to="/blog" className="text-link mb-8">
             <ArrowLeft size={15} /> The journal
           </Link>
           <div>
             <span className="eyebrow">{blog.category}</span>
           </div>
-          <h1 className="section-title my-5">{blog.title}</h1>
+          <CampaignHeading as="h1" lines={[blog.title]} className="section-title my-5" />
           <p className="body-copy">{blog.excerpt}</p>
           <div className="mt-5 flex flex-wrap gap-4 text-xs text-slate-500">
             <span>{blog.author}</span>

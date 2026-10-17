@@ -2,18 +2,25 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { ArrowUpRight, ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react'
 import { useEffect, useId, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { enquiryUrl, type PublicProduct } from '../../lib/productPresentation'
+import {
+  enquiryUrl,
+  productUrl,
+  productMetrics,
+  type PublicProduct,
+} from '../../lib/productPresentation'
 import { SpecificationHighlights } from './SpecificationHighlights'
 import { VehicleImage } from './VehicleImage'
+import { campaignEase } from '../../lib/campaignMotion'
+import { EnergyGraphic } from '../campaign/EnergyGraphic'
 
 interface Props {
   products: PublicProduct[]
-  onOpen: (product: PublicProduct) => void
 }
 
-export function FeaturedProductsCarousel({ products, onOpen }: Props) {
+export function FeaturedProductsCarousel({ products }: Props) {
   const [index, setIndex] = useState(0)
   const [playing, setPlaying] = useState(true)
+  const [direction, setDirection] = useState(1)
   const [hovered, setHovered] = useState(false)
   const [focused, setFocused] = useState(false)
   const reduced = useReducedMotion()
@@ -47,12 +54,14 @@ export function FeaturedProductsCarousel({ products, onOpen }: Props) {
   }, [activeIndex, reduced])
 
   function go(next: number) {
+    setDirection(next < activeIndex ? -1 : 1)
     setIndex((next + products.length) % products.length)
   }
   if (!product) return null
   return (
     <section
-      className="model-showcase"
+      className="model-showcase campaign-showcase"
+      data-category={product.category.toLowerCase()}
       aria-label="Featured electric vehicles"
       aria-roledescription="carousel"
       onMouseEnter={() => setHovered(true)}
@@ -104,16 +113,23 @@ export function FeaturedProductsCarousel({ products, onOpen }: Props) {
           }
         }}
       >
-        <AnimatePresence mode="wait" initial={false}>
+        <AnimatePresence mode="wait" initial={false} custom={direction}>
           <motion.div
             key={product.id}
+            custom={direction}
             className="model-stage"
-            initial={{ opacity: 0, x: reduced ? 0 : 24 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: reduced ? 0 : -24 }}
-            transition={{ duration: reduced ? 0 : 0.28, ease: [0.16, 1, 0.3, 1] }}
+            variants={{
+              enter: (travel: number) => ({ opacity: 0, x: reduced ? 0 : travel * 55 }),
+              visible: { opacity: 1, x: 0 },
+              leave: (travel: number) => ({ opacity: 0, x: reduced ? 0 : travel * -40 }),
+            }}
+            initial="enter"
+            animate="visible"
+            exit="leave"
+            transition={{ duration: reduced ? 0 : 0.4, ease: campaignEase }}
           >
             <div className="model-image">
+              <EnergyGraphic />
               <span className="model-watermark" aria-hidden="true">
                 {product.name}
               </span>
@@ -121,13 +137,29 @@ export function FeaturedProductsCarousel({ products, onOpen }: Props) {
             </div>
             <div className="model-copy">
               <span className="eyebrow">{product.category} / Electric mobility</span>
-              <h3>{product.name}</h3>
+              <motion.h3
+                initial={reduced ? false : { opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55, ease: campaignEase }}
+              >
+                {product.name}
+              </motion.h3>
               <p className="body-copy">{product.shortDescription}</p>
-              <SpecificationHighlights product={product} />
+              {productMetrics(product).length ? (
+                <SpecificationHighlights product={product} />
+              ) : (
+                <div className="model-spec-note">
+                  <span>GET CLOSER TO YOUR NEXT RIDE.</span>
+                  <p>
+                    Explore this model's gallery and available colours. Our team can help confirm
+                    its technical specifications.
+                  </p>
+                </div>
+              )}
               <div className="model-actions">
-                <button className="cta" onClick={() => onOpen(product)}>
+                <Link className="cta" to={productUrl(product)}>
                   Explore model <ArrowUpRight size={17} />
-                </button>
+                </Link>
                 <Link to={enquiryUrl(product)} className="cta cta-outline">
                   Enquire now
                 </Link>
