@@ -70,6 +70,24 @@ are stored in ignored `artifacts/model-pages`.
 - The public catalog response was identical before and after the read-only review.
 - The unchanged Railway API reports health `ok`.
 
+## Visibility hardening follow-up
+
+The reported blank enquiry heading was caused by observing text already
+translated outside its clipping mask. Campaign headings now observe stationary
+wrappers and enhance otherwise visible content with optional entrance animations.
+The shared block reveal follows the same fail-open approach: missing observers,
+unsupported/interrupted animations and reduced-motion settings cannot leave its
+content permanently hidden. Animations are cancelled on cleanup.
+
+Gallery selection is now tracked by image URL, so image removal/reordering does
+not leave a stale selected index. Metadata normalizes trailing slashes so the
+catalog is not incorrectly marked as an unavailable model page.
+
+Final regression suite: **37/37 tests pass**, including normal-motion mask
+visibility at desktop/mobile widths, fast scrolling, route re-entry, silent
+observer failure, and reduced-motion behaviour. ESLint and the production build
+also pass. No backend, catalog data or product-image changes are involved.
+
 ## Remaining limitations
 
 This remains a client-rendered Vite SPA, not server-rendered model HTML. Metadata

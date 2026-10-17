@@ -7,13 +7,16 @@ import { VehicleImage } from './VehicleImage'
 export function ProductGallery({ product }: { product: PublicProduct }) {
   const reduced = useReducedMotion()
   const images = product.images ?? []
-  const [selected, setSelected] = useState(
-    Math.max(
-      0,
-      images.findIndex((image) => image.url === product.image),
-    ),
-  )
-  const image = images[selected] ?? images[0]
+  const [selectedUrl, setSelectedUrl] = useState(product.image)
+  const selectedMatch = images.findIndex((image) => image.url === selectedUrl)
+  const selected =
+    selectedMatch >= 0
+      ? selectedMatch
+      : Math.max(
+          0,
+          images.findIndex((image) => image.url === product.image),
+        )
+  const image = images[selected]
   if (!image) return null
   return (
     <div aria-label={`${product.name} image gallery`}>
@@ -46,7 +49,7 @@ export function ProductGallery({ product }: { product: PublicProduct }) {
               className={`gallery-thumbnail ${index === selected ? 'is-selected' : ''}`}
               aria-label={`View ${item.alt}`}
               aria-pressed={selected === index}
-              onClick={() => setSelected(index)}
+              onClick={() => setSelectedUrl(item.url)}
             >
               <img src={productImageUrl(item.url, 160)} alt="" loading="lazy" />
             </button>

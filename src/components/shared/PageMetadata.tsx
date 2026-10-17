@@ -29,7 +29,8 @@ const metadata: Record<string, [string, string]> = {
 }
 
 export function PageMetadata() {
-  const { pathname } = useLocation()
+  const location = useLocation()
+  const pathname = location.pathname.replace(/\/+$/, '') || '/'
   const isModel = pathname.startsWith('/products/')
   const query = useQuery({ queryKey: ['products'], queryFn: getProducts, enabled: isModel })
   let slug = ''

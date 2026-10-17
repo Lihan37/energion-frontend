@@ -1,6 +1,5 @@
-import { motion, useReducedMotion } from 'framer-motion'
-
-import { campaignEase } from '../../lib/campaignMotion'
+import { useReducedMotion } from 'framer-motion'
+import { useViewportEntrance } from '../../lib/useViewportEntrance'
 
 export function CampaignHeading({
   lines,
@@ -12,18 +11,18 @@ export function CampaignHeading({
   className?: string
 }) {
   const reduced = useReducedMotion()
+  const ref = useViewportEntrance<HTMLHeadingElement>({
+    disabled: reduced,
+    selector: '.heading-line',
+    keyframes: [{ transform: 'translateY(110%) rotate(2deg)' }, { transform: 'none' }],
+    duration: 850,
+    stagger: 90,
+  })
   return (
-    <Tag className={`campaign-heading ${className}`} aria-label={lines.join(' ')}>
-      {lines.map((line, index) => (
+    <Tag ref={ref} className={`campaign-heading ${className}`} aria-label={lines.join(' ')}>
+      {lines.map((line) => (
         <span className="heading-mask" key={line} aria-hidden="true">
-          <motion.span
-            initial={reduced ? false : { y: '110%', rotate: 2 }}
-            whileInView={{ y: '0%', rotate: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: reduced ? 0 : 0.85, delay: index * 0.09, ease: campaignEase }}
-          >
-            {line}
-          </motion.span>
+          <span className="heading-line">{line}</span>
         </span>
       ))}
     </Tag>

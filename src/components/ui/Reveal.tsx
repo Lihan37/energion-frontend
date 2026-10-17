@@ -1,7 +1,8 @@
-import { motion, useReducedMotion } from 'framer-motion'
+import { useReducedMotion } from 'framer-motion'
 import type { PropsWithChildren } from 'react'
 
 import { cn } from '../../lib/cn'
+import { useViewportEntrance } from '../../lib/useViewportEntrance'
 
 interface RevealProps extends PropsWithChildren {
   className?: string
@@ -29,28 +30,28 @@ export function Reveal({
 }: RevealProps) {
   const prefersReducedMotion = useReducedMotion()
 
-  // Honour reduced-motion: render content in place with no transform/blur work.
-  if (prefersReducedMotion) {
-    return <div className={cn(className)}>{children}</div>
-  }
-
-  const initialOffset = {
-    up: { y },
-    down: { y: -y },
-    left: { x },
-    right: { x: -x },
-    scale: { y: 24, scale: 0.9 },
+  const transform = {
+    up: `translateY(${y}px)`,
+    down: `translateY(${-y}px)`,
+    left: `translateX(${x}px)`,
+    right: `translateX(${-x}px)`,
+    scale: 'translateY(24px) scale(0.9)',
   }[direction]
+  const ref = useViewportEntrance<HTMLDivElement>({
+    disabled: prefersReducedMotion,
+    keyframes: [
+      { opacity: 0, transform, filter: blur ? 'blur(6px)' : 'none' },
+      { opacity: 1, transform: 'none', filter: 'none' },
+    ],
+    duration: duration * 1000,
+    delay: delay * 1000,
+    once,
+    amount,
+  })
 
   return (
-    <motion.div
-      className={cn(className)}
-      initial={{ opacity: 0, filter: blur ? 'blur(6px)' : 'blur(0px)', ...initialOffset }}
-      whileInView={{ opacity: 1, x: 0, y: 0, scale: 1, filter: 'blur(0px)' }}
-      viewport={{ once, amount }}
-      transition={{ duration, delay, ease: [0.16, 1, 0.3, 1] }}
-    >
+    <div ref={ref} className={cn(className)}>
       {children}
-    </motion.div>
+    </div>
   )
 }
