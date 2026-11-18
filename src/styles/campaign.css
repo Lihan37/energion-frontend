@@ -17,7 +17,7 @@
 }
 .route-pending span {
   color: #fff;
-  font: 400 12px var(--font-sans);
+  font: 400 14px var(--font-sans);
 }
 .campaign-heading {
   font: 600 clamp(48px, 6.5vw, 92px)/0.95 var(--font-display);
@@ -80,7 +80,7 @@
 }
 .campaign-hero-copy .eyebrow {
   color: #c1c8b9;
-  font-size: 10px;
+  font-size: 13px;
 }
 .campaign-hero-title {
   font: 700 clamp(100px, 11.6vw, 174px)/0.83 var(--font-display);
@@ -129,7 +129,7 @@
   position: absolute;
   top: 12px;
   right: 0;
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.9;
   letter-spacing: 0.18em;
   color: #0a0a0a;
@@ -151,7 +151,7 @@
   text-transform: uppercase;
 }
 .machine-caption span {
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.12em;
 }
 .machine-awaiting {
@@ -171,7 +171,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  font-size: 9px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.13em;
   line-height: 1.6;
@@ -188,7 +188,7 @@
   gap: 3rem;
 }
 .campaign-hero-bottom dt {
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: #c1c8b9;
@@ -198,7 +198,7 @@
   margin-top: 6px;
 }
 .hero-edition {
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.8;
   letter-spacing: 0.14em;
   color: #c1c8b9;
@@ -368,11 +368,11 @@
 }
 .model-spec-note > span {
   color: #b7d234;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.12em;
 }
 .model-spec-note p {
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.8;
   color: #c1c8b9;
   margin-top: 0.75rem;
@@ -498,7 +498,7 @@
   justify-content: space-between;
   border-top: 1px solid #0a0a0a55;
   padding-top: 12px;
-  font-size: 9px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
 }
@@ -511,7 +511,7 @@
 .story-chapter-nav a {
   border-top: 2px solid #ffffff30;
   padding-top: 12px;
-  font-size: 8px;
+  font-size: 12px;
   line-height: 1.6;
   letter-spacing: 0.05em;
   color: #c1c8b9;
@@ -560,7 +560,7 @@
   margin-top: 18px;
 }
 .story-chapter p {
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.9;
   color: #c1c8b9;
   margin-top: 1.5rem;
@@ -577,7 +577,7 @@
   align-items: baseline;
 }
 .story-facts dt {
-  font-size: 10px;
+  font-size: 13px;
   color: #c1c8b9;
 }
 .story-facts dd {
@@ -616,7 +616,7 @@
   border-bottom: 1px solid #0a0a0a40;
 }
 .manifesto-label > span:last-child {
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.1em;
 }
 .manifesto-type {
@@ -720,7 +720,7 @@
   gap: 1rem;
 }
 .intro-label > span:last-child {
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.12em;
 }
 .campaign-intro .display-title {
@@ -826,7 +826,7 @@
   min-height: 130px;
 }
 .vehicle-card .spec-highlight dd {
-  font-size: 12px;
+  font-size: 14px;
 }
 .card-model-note {
   min-height: 130px;
@@ -841,7 +841,7 @@
   font: 500 30px/1 var(--font-display);
 }
 .card-model-note span:last-child {
-  font-size: 11px;
+  font-size: 14px;
   color: var(--muted);
 }
 .vehicle-card-footer button {
@@ -871,7 +871,7 @@
   z-index: 1;
 }
 .detail-campaign-banner > span:last-of-type {
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.14em;
 }
 .detail-campaign-banner .energy-graphic {
@@ -920,7 +920,7 @@
   gap: 1rem;
   justify-content: space-between;
   margin-top: 12px;
-  font-size: 9px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
@@ -956,7 +956,7 @@
   gap: 1.5rem;
   text-transform: uppercase;
   letter-spacing: 0.07em;
-  font-size: 10px;
+  font-size: 13px;
   transition:
     color 0.3s,
     background 0.3s;
@@ -1003,7 +1003,7 @@
 .mobile-menu nav a::before {
   counter-increment: menu-item;
   content: '0' counter(menu-item);
-  font: 400 10px var(--font-sans);
+  font: 400 13px var(--font-sans);
   color: #b7d234;
 }
 .site-footer {
@@ -1041,9 +1041,21 @@
 }
 .article-layout .article-cover {
   border-radius: 0;
-  object-fit: contain;
+  object-fit: cover;
   background: #e9ece3;
-  padding: clamp(16px, 4vw, 48px);
+  padding: 0;
+  aspect-ratio: 16 / 10;
+  max-height: none;
+  margin-bottom: 0.65rem;
+}
+.article-figure {
+  margin-bottom: 2rem;
+}
+.editorial-image-credit {
+  margin-top: 0.5rem;
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: 0.03em;
 }
 .about-team {
   border-top: 1px solid var(--line-strong);
@@ -1104,7 +1116,7 @@
 .founder-purpose span {
   display: block;
   margin-top: 0.75rem;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.7;
   color: #c1c8b9;
 }
@@ -1115,7 +1127,7 @@
   margin: 3.5rem 0 1.5rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--line-strong);
-  font-size: 10px;
+  font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
 }
@@ -1149,7 +1161,7 @@
 }
 .team-member p {
   margin-top: 0.5rem;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--muted);
 }
 @media (min-width: 768px) and (max-width: 1199px) {
@@ -1185,7 +1197,7 @@
     font-size: 22px;
   }
   .team-member p {
-    font-size: 11px;
+    font-size: 14px;
   }
 }
 .story-facts > div {
@@ -1331,7 +1343,7 @@
     padding-bottom: 0;
   }
   .campaign-hero-copy .eyebrow {
-    font-size: 8px;
+    font-size: 12px;
   }
   .campaign-hero-title {
     font-size: clamp(84px, 23vw, 164px);
@@ -1339,14 +1351,14 @@
     margin: 1.5rem 0;
   }
   .campaign-hero-copy p {
-    font-size: 12px;
+    font-size: 14px;
   }
   .campaign-hero-copy .hero-actions {
     margin-top: 1.25rem;
     gap: 1.2rem;
   }
   .campaign-hero-copy .text-link {
-    font-size: 10px;
+    font-size: 13px;
   }
   .campaign-hero-machine {
     height: 335px;
@@ -1362,7 +1374,7 @@
   .machine-coordinate {
     top: 30px;
     right: 5px;
-    font-size: 8px;
+    font-size: 12px;
   }
   .machine-caption {
     inset-inline: 12px;
@@ -1381,7 +1393,7 @@
     gap: 0.8rem;
   }
   .hero-scroll {
-    font-size: 7px;
+    font-size: 12px;
     gap: 8px;
   }
   .hero-scroll svg {
@@ -1396,7 +1408,7 @@
   }
   .campaign-hero-bottom dt {
     color: #252b24;
-    font-size: 7px;
+    font-size: 12px;
   }
   .campaign-hero-bottom dd {
     font-size: 18px;
@@ -1408,7 +1420,7 @@
     margin-bottom: 2rem;
   }
   .campaign-lineup .section-topline .text-link {
-    font-size: 11px;
+    font-size: 14px;
   }
   .campaign-showcase .model-tabs {
     padding: 8px 16px;
@@ -1440,7 +1452,7 @@
     margin: 0.6rem 0 0.8rem;
   }
   .campaign-showcase .model-copy .body-copy {
-    font-size: 12px;
+    font-size: 14px;
     min-height: 68px;
   }
   .campaign-showcase .model-copy .spec-highlights {
@@ -1452,7 +1464,7 @@
   }
   .campaign-showcase .model-controls {
     padding: 1rem;
-    font-size: 8px;
+    font-size: 12px;
   }
   .campaign-showcase .model-controls > span {
     max-width: 115px;
@@ -1490,7 +1502,7 @@
   }
   .story-chapter-nav a {
     min-height: 55px;
-    font-size: 7px;
+    font-size: 12px;
   }
   .story-progress {
     display: none;
@@ -1508,7 +1520,7 @@
     max-width: 330px;
   }
   .story-chapter p {
-    font-size: 12px;
+    font-size: 14px;
     margin-top: 1rem;
   }
   .story-facts dd {
@@ -1521,8 +1533,8 @@
     align-items: start;
   }
   .manifesto-label > span:last-child {
-    font-size: 7px;
-    max-width: 100px;
+    font-size: 12px;
+    max-width: 160px;
     text-align: right;
     line-height: 1.7;
   }
@@ -1538,7 +1550,7 @@
     margin: -10px 0 1.5rem;
   }
   .manifesto-bottom p {
-    font-size: 12px;
+    font-size: 14px;
   }
   .public-page .enquiry-band {
     padding: 1.5rem;
@@ -1550,7 +1562,7 @@
     font-size: 42px;
   }
   .enquiry-band p {
-    font-size: 12px;
+    font-size: 14px;
     max-width: 210px;
   }
   .campaign-intro .display-title {
@@ -1561,7 +1573,7 @@
     display: none;
   }
   .campaign-intro .body-copy {
-    font-size: 12px;
+    font-size: 14px;
   }
   .intro-baseline > span {
     font-size: 46px;
@@ -1605,7 +1617,7 @@
   }
   .about-principles .value-item p {
     grid-column: 2;
-    font-size: 12px;
+    font-size: 14px;
   }
   .footer-wordmark {
     font-size: 18.5vw;

@@ -57,7 +57,10 @@ export function BlogDetailsPage() {
             <span>{blog.readTime}</span>
           </div>
         </div>
-        <SmoothImage src={blog.coverImage} alt="" loading="eager" className="article-cover" />
+        <figure className="article-figure">
+          <SmoothImage src={blog.coverImage} alt={blog.coverAlt ?? ''} loading="eager" className="article-cover" />
+          {blog.aiIllustration && <figcaption className="editorial-image-credit">AI-generated illustration</figcaption>}
+        </figure>
         <div className="prose-rich space-y-10">
           {blog.content.map((section) => (
             <section key={section.heading} className="space-y-4">

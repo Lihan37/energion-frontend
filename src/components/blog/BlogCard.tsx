@@ -11,9 +11,12 @@ export function BlogCard({ blog }: { blog: Blog }) {
         <span>{blog.readTime}</span>
       </div>
       <Link to={`/blog/${blog.slug}`} aria-label={`Read ${blog.title}`}>
-        <div className="journal-image">
-          <SmoothImage src={blog.coverImage} alt="" className="h-full w-full object-contain p-5" />
-        </div>
+        <figure>
+          <div className="journal-image">
+            <SmoothImage src={blog.coverImage} alt={blog.coverAlt ?? ''} className="h-full w-full object-cover" />
+          </div>
+          {blog.aiIllustration && <figcaption className="editorial-image-credit">AI-generated illustration</figcaption>}
+        </figure>
         <h3>{blog.title}</h3>
       </Link>
       <p>{blog.excerpt}</p>

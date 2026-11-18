@@ -11,6 +11,8 @@ export interface Blog {
   category: 'Company' | 'Technology' | 'Guides'
   author: string
   coverImage: string
+  coverAlt?: string
+  aiIllustration?: boolean
   publishedAt: string
   readTime: string
   featured?: boolean

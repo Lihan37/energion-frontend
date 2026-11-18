@@ -3,6 +3,7 @@
 @import './styles/public.css';
 @import './styles/campaign.css';
 @import './styles/model-pages.css';
+@import './styles/readability.css';
 
 @theme {
   --font-sans: 'Outfit', sans-serif;

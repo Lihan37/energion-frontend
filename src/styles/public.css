@@ -34,7 +34,7 @@
 .header-nav a {
   position: relative;
   padding: 1.75rem 0;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
 }
 .header-nav a::after {
@@ -60,7 +60,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  font-size: 12px;
+  font-size: 14px;
 }
 .icon-button {
   display: inline-flex;
@@ -130,7 +130,7 @@
   padding: 0.85rem 1.4rem;
   background: #b7d234;
   color: #080a08;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   border: 1px solid transparent;
   border-radius: 3px;
@@ -156,7 +156,7 @@
   gap: 0.8rem;
   border-bottom: 1px solid currentColor;
   padding: 0.5rem 0;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
 }
 .eyebrow {
@@ -164,7 +164,7 @@
   align-items: center;
   gap: 0.7rem;
   text-transform: uppercase;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.22em;
 }
@@ -336,7 +336,7 @@
 }
 .hero-model small {
   display: block;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.25em;
   text-transform: uppercase;
   color: #c1c8b9;
@@ -355,7 +355,7 @@
   justify-content: space-between;
   align-items: center;
   padding-block: 1.4rem;
-  font-size: 10px;
+  font-size: 13px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
 }
@@ -445,7 +445,7 @@
   margin: 0.8rem 0 1.2rem;
 }
 .model-copy .body-copy {
-  font-size: 13px;
+  font-size: 15px;
   min-height: 75px;
 }
 .model-controls {
@@ -454,7 +454,7 @@
   align-items: center;
   padding-top: 1.5rem;
   gap: 1rem;
-  font-size: 11px;
+  font-size: 14px;
   color: var(--muted);
 }
 .model-controls > div {
@@ -476,14 +476,14 @@
   border-top: 1px solid var(--line);
 }
 .spec-highlight dt {
-  font-size: 9px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.16em;
   color: var(--muted);
   margin-bottom: 0.4rem;
 }
 .spec-highlight dd {
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
   overflow-wrap: anywhere;
 }
@@ -530,7 +530,7 @@
 }
 .feature-row small {
   color: #b7d234;
-  font-size: 10px;
+  font-size: 13px;
 }
 .feature-row h3 {
   font: 500 24px var(--font-display);
@@ -538,7 +538,7 @@
 }
 .feature-row p {
   color: #c1c8b9;
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.8;
 }
 .enquiry-band {
@@ -560,7 +560,7 @@
   text-transform: uppercase;
 }
 .enquiry-band p {
-  font-size: 13px;
+  font-size: 15px;
   margin-top: 0.8rem;
 }
 
@@ -583,7 +583,7 @@
   border: 1px solid var(--line-strong);
   border-radius: 3px;
   padding: 0.65rem 1.2rem;
-  font-size: 12px;
+  font-size: 14px;
 }
 .filter-tabs button[aria-pressed='true'] {
   background: #080a08;
@@ -608,7 +608,7 @@
   border: 1px solid var(--line-strong);
   background: white;
   padding: 0 12px 0 38px;
-  font-size: 12px;
+  font-size: 14px;
 }
 .vehicle-card {
   height: 100%;
@@ -643,7 +643,7 @@
   position: absolute;
   top: 1rem;
   left: 1rem;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   z-index: 1;
@@ -667,7 +667,7 @@
   text-transform: uppercase;
 }
 .vehicle-card p {
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.8;
   color: var(--muted);
   margin-top: 0.8rem;
@@ -677,7 +677,7 @@
   margin-block: 1rem;
 }
 .vehicle-card .spec-highlight dd {
-  font-size: 12px;
+  font-size: 14px;
 }
 .vehicle-card .spec-highlight {
   padding-block: 0.7rem;
@@ -690,7 +690,7 @@
   margin-top: auto;
 }
 .vehicle-card-footer button {
-  font-size: 12px;
+  font-size: 14px;
   display: flex;
   gap: 0.5rem;
   align-items: center;
@@ -698,7 +698,7 @@
   min-height: 44px;
 }
 .vehicle-card-footer a {
-  font-size: 11px;
+  font-size: 14px;
   color: var(--muted);
   border-bottom: 1px solid var(--line-strong);
   padding-block: 0.4rem;
@@ -712,7 +712,7 @@
   height: 100%;
   width: 100%;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
 }
 .image-placeholder-name {
   font: 600 clamp(42px, 5vw, 80px)/1 var(--font-display);
@@ -720,7 +720,7 @@
   letter-spacing: 0.02em;
 }
 .image-placeholder small {
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.13em;
   text-transform: uppercase;
 }
@@ -789,7 +789,7 @@
   margin: 0.8rem 0 1rem;
 }
 .detail-copy {
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.9;
   color: var(--muted);
 }
@@ -803,7 +803,7 @@
   border: 1px solid var(--line-strong);
   padding: 0.45rem 0.65rem;
   border-radius: 3px;
-  font-size: 10px;
+  font-size: 13px;
 }
 .detail-section {
   margin-top: 2rem;
@@ -824,12 +824,12 @@
   border: 1px solid var(--line);
 }
 .detail-specs dt {
-  font-size: 11px;
+  font-size: 14px;
   color: var(--muted);
   margin-bottom: 0.4rem;
 }
 .detail-specs dd {
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.7;
   overflow-wrap: anywhere;
 }
@@ -863,7 +863,7 @@
   margin-bottom: 1rem;
 }
 .value-item p {
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.9;
   color: #c1c8b9;
 }
@@ -878,7 +878,7 @@
   border-top: 1px solid var(--line-strong);
 }
 .contact-details dt {
-  font-size: 10px;
+  font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.16em;
   margin-bottom: 0.6rem;
@@ -896,7 +896,7 @@
 }
 .form-note {
   color: var(--muted);
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.8;
 }
 .dealer-layout {
@@ -913,7 +913,7 @@
 .region-list button {
   padding: 1rem;
   text-align: left;
-  font-size: 13px;
+  font-size: 15px;
   border-bottom: 1px solid var(--line);
 }
 .region-list button[aria-pressed='true'] {
@@ -933,12 +933,12 @@
 }
 .dealer-card p {
   color: var(--muted);
-  font-size: 13px;
+  font-size: 15px;
   line-height: 1.8;
 }
 .dealer-card .text-link {
   margin-top: 1rem;
-  font-size: 11px;
+  font-size: 14px;
 }
 .journal-card {
   border-top: 1px solid var(--line-strong);
@@ -953,7 +953,7 @@
 .journal-image img {
   height: 100%;
   width: 100%;
-  object-fit: contain;
+  object-fit: cover;
   transition: transform 0.6s;
 }
 .journal-card:hover img {
@@ -964,7 +964,7 @@
   margin-block: 1rem;
 }
 .journal-card p {
-  font-size: 13px;
+  font-size: 15px;
   color: var(--muted);
   line-height: 1.8;
 }
@@ -1003,7 +1003,7 @@
   padding-block: 3rem;
 }
 .footer-columns h3 {
-  font-size: 10px;
+  font-size: 13px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: #89927f;
@@ -1011,7 +1011,7 @@
 }
 .footer-columns p,
 .footer-columns a {
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.9;
   color: #c1c8b9;
 }
@@ -1036,7 +1036,7 @@
   justify-content: space-between;
   gap: 1rem;
   padding-block: 1.5rem;
-  font-size: 10px;
+  font-size: 13px;
   color: #89927f;
 }
 .status-panel {
@@ -1052,7 +1052,7 @@
 }
 .status-panel p {
   color: var(--muted);
-  font-size: 13px;
+  font-size: 15px;
   margin-bottom: 1.5rem;
 }
 
@@ -1106,7 +1106,7 @@
     margin-block: 1.3rem;
   }
   .hero-copy p {
-    font-size: 13px;
+    font-size: 15px;
     max-width: 340px;
   }
   .hero-visual {
@@ -1122,10 +1122,10 @@
   .hero-actions .cta {
     padding-inline: 1rem;
     gap: 1rem;
-    font-size: 11px;
+    font-size: 14px;
   }
   .hero-bottom-inner {
-    font-size: 8px;
+    font-size: 12px;
     letter-spacing: 0.1em;
   }
   .intro-strip,
@@ -1160,7 +1160,7 @@
     flex: 1;
     gap: 0.7rem;
     padding-inline: 0.9rem;
-    font-size: 11px;
+    font-size: 14px;
   }
   .technology-visual {
     min-height: 340px;

@@ -17,6 +17,10 @@ test('About shows all six supplied portraits, names and roles in responsive grid
     await expect(section.locator('article')).toHaveCount(6)
     await expect(section.locator('.team-founder h3')).toHaveText(team[0].name)
     await expect(section.locator('.team-grid article')).toHaveCount(5)
+    await expect(section.locator('.team-grid article').last().locator('h3')).toHaveText('MD. Annafy Al Amin')
+    await expect(section.locator('.team-grid-label')).toHaveCSS('font-size', width < 768 ? '14px' : '16px')
+    await expect(section.getByText('People. Purpose. Progress.', { exact: true })).toBeVisible()
+    await expect(section.locator('.team-member p').first()).toHaveCSS('font-size', '14px')
     await expect(section.locator('.team-member-index')).toHaveCount(0)
     await expect(section.locator('.team-member .team-portrait').first()).toHaveCSS('background-color', 'rgb(227, 231, 220)')
     await expect(section.locator('.team-member .team-portrait img').first()).toHaveCSS('mix-blend-mode', 'normal')
@@ -41,24 +45,28 @@ test('About shows all six supplied portraits, names and roles in responsive grid
   }
 })
 
-test('story cards and article covers use the supplied full bike photos, not stock bikes', async ({ page }) => {
-  await page.route('https://res.cloudinary.com/**', (route) => route.fulfill({
-    contentType: 'image/svg+xml',
-    body: '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="800"/>',
-  }))
+test('story cards and article covers use matching AI rider scenes with disclosure', async ({ page }) => {
   await page.goto('/blog')
   const images = page.locator('.journal-card img')
   await expect(images).toHaveCount(3)
   for (let index = 0; index < blogs.length; index++) {
-    expect(blogs[index].coverImage).toContain('res.cloudinary.com/ncdyagc3/')
+    expect(blogs[index].coverImage).toBe(`/images/editorial/${['city-commuting', 'battery-care', 'dealer-support'][index]}.webp`)
     await expect(images.nth(index)).toHaveAttribute('src', blogs[index].coverImage)
-    await expect(images.nth(index)).toHaveCSS('object-fit', 'contain')
+    await expect(images.nth(index)).toHaveAttribute('alt', blogs[index].coverAlt!)
+    await expect(images.nth(index)).toHaveCSS('object-fit', 'cover')
+    await images.nth(index).evaluate(async (image: HTMLImageElement) => {
+      image.loading = 'eager'
+      await image.decode()
+      if (image.naturalWidth < 1000) throw new Error('Editorial cover missing or too small')
+    })
   }
+  await expect(page.locator('.journal-card figcaption')).toHaveCount(3)
   for (const blog of blogs) {
     await page.goto(`/blog/${blog.slug}`)
     const image = page.locator('.article-cover')
     await expect(image).toHaveAttribute('src', blog.coverImage)
-    await expect(image).toHaveCSS('object-fit', 'contain')
+    await expect(image).toHaveCSS('object-fit', 'cover')
+    await expect(page.locator('.article-figure figcaption')).toHaveText('AI-generated illustration')
   }
 })
 

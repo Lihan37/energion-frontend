@@ -9,8 +9,9 @@ export const blogs: Blog[] = [
       'Electric mobility is no longer a niche idea. It is becoming the most practical answer to crowded cities, rising fuel costs, and time lost in traffic.',
     category: 'Guides',
     author: 'Nadia Rahman',
-    coverImage:
-      'https://res.cloudinary.com/ncdyagc3/image/upload/f_auto,q_auto,w_1200,c_limit/v1794996928/energion/products/evox/evox-black-1-7b21459a47.webp',
+    coverImage: '/images/editorial/city-commuting.webp',
+    coverAlt: 'AI illustration of a helmeted commuter riding a black-and-gold EZ GO EVOX on a tree-lined city street.',
+    aiIllustration: true,
     publishedAt: '2026-04-07',
     readTime: '6 min read',
     featured: true,
@@ -43,8 +44,9 @@ export const blogs: Blog[] = [
       'Good battery habits protect range, extend component life, and keep your e-bike ready when your week gets busy.',
     category: 'Technology',
     author: 'Imran Hossain',
-    coverImage:
-      'https://res.cloudinary.com/ncdyagc3/image/upload/f_auto,q_auto,w_1200,c_limit/v1794996954/energion/products/nexo/nexo-blue-11-74889bc107.webp',
+    coverImage: '/images/editorial/battery-care.webp',
+    coverAlt: 'AI illustration of a rider and service advisor inspecting a charging cable beside a parked blue EZ GO NEXO.',
+    aiIllustration: true,
     publishedAt: '2026-03-29',
     readTime: '5 min read',
     content: [
@@ -71,8 +73,9 @@ export const blogs: Blog[] = [
       'A premium electric bike is not only about the frame and motor. Dealer support shapes the ownership experience long after the first ride.',
     category: 'Company',
     author: 'Energion Editorial',
-    coverImage:
-      'https://res.cloudinary.com/ncdyagc3/image/upload/f_auto,q_auto,w_1200,c_limit/v1794996966/energion/products/sprinto/sprinto-side-olive-1-3x-678648c111.webp',
+    coverImage: '/images/editorial/dealer-support.webp',
+    coverAlt: 'AI illustration of a dealer advisor explaining an olive EZ GO Sprinto to a customer in a showroom.',
+    aiIllustration: true,
     publishedAt: '2026-03-12',
     readTime: '4 min read',
     content: [
