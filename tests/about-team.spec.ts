@@ -15,6 +15,11 @@ test('About shows all six supplied portraits, names and roles in responsive grid
     const section = page.getByRole('region', { name: 'Our team. Shared ambition.' })
     await section.scrollIntoViewIfNeeded()
     await expect(section.locator('article')).toHaveCount(6)
+    await expect(section.locator('.team-founder h3')).toHaveText(team[0].name)
+    await expect(section.locator('.team-grid article')).toHaveCount(5)
+    const founderBounds = await section.locator('.team-founder').boundingBox()
+    const memberBounds = await section.locator('.team-grid').boundingBox()
+    expect(founderBounds!.y + founderBounds!.height).toBeLessThan(memberBounds!.y)
     for (const member of team) {
       await expect(section.getByRole('heading', { name: member.name, exact: true })).toBeVisible()
       await expect(section.getByText(member.role, { exact: true })).toBeVisible()
@@ -25,7 +30,7 @@ test('About shows all six supplied portraits, names and roles in responsive grid
       })
     }
     const columns = await section.locator('.team-grid').evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(' ').length)
-    expect(columns).toBe(width < 768 ? 2 : 3)
+    expect(columns).toBe(width < 768 ? 2 : width < 1200 ? 3 : 5)
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true)
   }
 })
