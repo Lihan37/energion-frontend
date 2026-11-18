@@ -24,7 +24,7 @@ export function BlogPage() {
   return (
     <Container>
       <CampaignIntro
-        eyebrow="The Energion journal"
+        eyebrow="Blog and Media"
         index="05"
         tone="black"
         lines={['Ideas in', 'motion.']}

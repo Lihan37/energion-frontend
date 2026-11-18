@@ -59,7 +59,7 @@ export function Footer() {
         </div>
         <div className="footer-bottom">
           <span>&copy; {new Date().getFullYear()} Energion E-Mobility. All rights reserved.</span>
-          <span>Electric by nature. Energion by choice.</span>
+          <span>EZ GO. A Homegrown Electric Brand.</span>
         </div>
       </Container>
     </footer>

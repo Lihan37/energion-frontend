@@ -22,7 +22,7 @@ const metadata: Record<string, [string, string]> = {
   ],
   '/map': ['Find a dealer', 'Find Energion dealer points by region across Bangladesh.'],
   '/blog': [
-    'The Energion journal',
+    'Blog and Media',
     'Stories and guides on electric mobility, everyday riding and Energion.',
   ],
   '/auth': ['Your Energion account', 'Sign in to your Energion E-Mobility account.'],

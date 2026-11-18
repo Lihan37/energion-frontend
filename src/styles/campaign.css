@@ -929,8 +929,18 @@
 }
 .header-nav a {
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 10px;
+  letter-spacing: 0.035em;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.header-nav {
+  gap: clamp(0.8rem, 1.5vw, 1.5rem);
+}
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .header-actions .cta {
+    display: none;
+  }
 }
 .public-page .cta {
   position: relative;

@@ -9,11 +9,11 @@ export function KineticBand() {
   const [playing, setPlaying] = useState(true)
   return (
     <div ref={ref} className={`kinetic-band ${playing && inView && !reduced ? 'is-running' : ''}`}>
-      <span className="sr-only">Electric by nature. Energion by choice.</span>
+      <span className="sr-only">EZ GO. A Homegrown Electric Brand.</span>
       <div className="kinetic-track" aria-hidden="true">
         {[0, 1].map((index) => (
           <span key={index}>
-            ELECTRIC BY NATURE <i>↗</i> ENERGION BY CHOICE <i>↗</i>&nbsp;
+            EZ GO <i>↗</i> A HOMEGROWN ELECTRIC BRAND <i>↗</i>&nbsp;
           </span>
         ))}
       </div>

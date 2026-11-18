@@ -28,21 +28,20 @@ try {
 }
 
 for (const directory of (await readdir(root, { withFileTypes: true })).filter((entry) =>
-  entry.isDirectory(),
+  entry.isDirectory() && entry.name.toLowerCase() !== 'customer appreciation post',
 )) {
-  const model =
-    directory.name === 'Evox'
-      ? 'EVOX'
-      : directory.name === 'Nexo'
-        ? 'NEXO'
-        : directory.name === 'Fury'
-          ? 'FURY'
-          : directory.name === 'Xplorer pro'
-            ? 'Xplorer Pro'
-            : directory.name
+  const models = {
+    aura: 'Aura', blast: 'Blast', evox: 'EVOX', fury: 'FURY', nexo: 'NEXO',
+    pulse: 'Pulse', raven: 'Raven', sprinto: 'Sprinto', velox: 'Velox',
+    xplorer: 'Xplorer', 'xplorer pro': 'Xplorer Pro',
+  }
   for (const filename of (await readdir(path.join(root, directory.name)))
     .filter((name) => name.endsWith('.webp'))
     .sort()) {
+    const model = directory.name.toLowerCase() === 'xplorer' && /\bpro\b/i.test(filename)
+      ? 'Xplorer Pro'
+      : models[directory.name.toLowerCase()]
+    if (!model) throw new Error(`Unrecognized product folder: ${directory.name}`)
     const relative = `${directory.name}/${filename}`
     if (manifest.some((image) => image.source === relative)) {
       console.log(`Already uploaded: ${relative}`)
