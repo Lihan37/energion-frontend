@@ -23,13 +23,13 @@ export function KineticBand() {
   }, [])
   return (
     <div ref={ref} className={`kinetic-band ${playing && inView && !reduced ? 'is-running' : ''}`}>
-      <span className="sr-only">EZ GO. A Homegrown Electric Brand.</span>
+      <span className="sr-only">EZ GO. A Homegrown Electric Brand. Electric by nature.</span>
       <div className="kinetic-track" aria-hidden="true" style={{ animationDuration: `${copies * 20}s` }}>
         {[0, 1].map((index) => (
           <div className="kinetic-group" key={index}>
             {Array.from({ length: copies }, (_, copy) => (
               <span ref={index === 0 && copy === 0 ? phraseRef : undefined} key={copy}>
-                EZ GO <i>↗</i> A HOMEGROWN ELECTRIC BRAND <i>↗</i>
+                EZ GO <i>↗</i> A HOMEGROWN ELECTRIC BRAND <i>↗</i> ELECTRIC BY NATURE <i>↗</i>
               </span>
             ))}
           </div>

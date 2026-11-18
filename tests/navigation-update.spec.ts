@@ -43,6 +43,7 @@ test('moving banner and footer use the new brand statement', async ({ page }) =>
   await page.goto('/')
   await expect(page.locator('.kinetic-band')).toContainText('EZ GO')
   await expect(page.locator('.kinetic-band')).toContainText('A HOMEGROWN ELECTRIC BRAND')
+  await expect(page.locator('.kinetic-band')).toContainText('ELECTRIC BY NATURE')
   await expect(page.locator('.footer-bottom')).toContainText('EZ GO. A Homegrown Electric Brand.')
   await expect(page.locator('body')).not.toContainText(/Energion by choice/i)
 })
