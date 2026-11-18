@@ -19,7 +19,10 @@ test('About shows all six supplied portraits, names and roles in responsive grid
     await expect(section.locator('.team-grid article')).toHaveCount(5)
     await expect(section.locator('.team-member-index')).toHaveCount(0)
     await expect(section.locator('.team-member .team-portrait').first()).toHaveCSS('background-color', 'rgb(227, 231, 220)')
-    await expect(section.locator('.team-member .team-portrait img').first()).toHaveCSS('mix-blend-mode', 'multiply')
+    await expect(section.locator('.team-member .team-portrait img').first()).toHaveCSS('mix-blend-mode', 'normal')
+    for (const image of await section.locator('.team-member .team-portrait img').all()) {
+      await expect(image).toHaveAttribute('src', /-studio\.webp$/)
+    }
     const founderBounds = await section.locator('.team-founder').boundingBox()
     const memberBounds = await section.locator('.team-grid').boundingBox()
     expect(founderBounds!.y + founderBounds!.height).toBeLessThan(memberBounds!.y)
@@ -58,3 +61,41 @@ test('story cards and article covers use the supplied full bike photos, not stoc
     await expect(image).toHaveCSS('object-fit', 'contain')
   }
 })
+
+for (const width of [390, 1440]) {
+  test(`team scroll entrances are staggered in order and finish visibly at ${width}px`, async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' })
+    await page.setViewportSize({ width, height: 900 })
+    await page.addInitScript(() => {
+      const original = Element.prototype.animate
+      const records: { name: string; delay: number; duration: number }[] = []
+      Object.assign(window, { teamEntrances: records })
+      Element.prototype.animate = function (frames, options) {
+        if (this.matches('.team-reveal') && typeof options === 'object') {
+          records.push({ name: this.querySelector('h3')!.textContent!, delay: Number(options.delay), duration: Number(options.duration) })
+        }
+        return original.call(this, frames, options)
+      }
+    })
+    await page.goto('/about')
+    await page.locator('.team-reveal').first().waitFor()
+    for (const card of await page.locator('.team-reveal').all()) {
+      await card.scrollIntoViewIfNeeded()
+    }
+    const records = () => page.evaluate(() => (window as Window & { teamEntrances?: { name: string; delay: number; duration: number }[] }).teamEntrances ?? [])
+    await expect.poll(async () => (await records()).length).toBe(5)
+    const entrances = await records()
+    for (const [index, member] of team.slice(1).entries()) {
+      const entrance = entrances.find((entry) => entry.name === member.name)
+      expect(entrance?.delay).toBeCloseTo(index * 160)
+      expect(entrance?.duration).toBe(850)
+    }
+    await page.locator('.team-grid').evaluate(async (grid) => {
+      await Promise.all(grid.getAnimations({ subtree: true }).map((animation) => animation.finished.catch(() => {})))
+    })
+    for (const card of await page.locator('.team-reveal').all()) {
+      await expect(card).toHaveCSS('opacity', '1')
+      await expect(card).toHaveCSS('transform', 'none')
+    }
+  })
+}

@@ -1135,7 +1135,7 @@
   isolation: isolate;
 }
 .team-member .team-portrait img {
-  mix-blend-mode: multiply;
+  mix-blend-mode: normal;
 }
 .team-member-info {
   display: flex;

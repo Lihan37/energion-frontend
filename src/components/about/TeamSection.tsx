@@ -15,7 +15,7 @@ export function TeamSection() {
           </div>
           <p className="body-copy">Meet the people bringing our homegrown electric brand to life.</p>
         </div>
-        <Reveal>
+        <Reveal duration={0.9} y={48}>
           <article className="team-founder" aria-labelledby="founder-name">
             <div className="team-portrait founder-portrait">
               <SmoothImage
@@ -44,11 +44,11 @@ export function TeamSection() {
         </div>
         <div className="team-grid">
           {members.map((member, index) => (
-            <Reveal key={member.photo} delay={(index % 3) * 0.06}>
+            <Reveal key={member.photo} delay={index * 0.16} duration={0.85} y={48} className="team-reveal">
               <article className="team-member">
                 <div className="team-portrait">
                   <SmoothImage
-                    src={`/images/team/${member.photo}.jpeg`}
+                    src={`/images/team/${member.photo}-studio.webp`}
                     alt={member.name}
                     width={600}
                     height={750}
