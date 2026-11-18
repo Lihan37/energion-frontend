@@ -743,10 +743,13 @@
 }
 .detail-visual {
   height: 360px;
+  min-width: 0;
+  overflow: hidden;
   background: #ebeee6;
   border-radius: 4px;
 }
 .detail-visual img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: contain;
@@ -754,7 +757,11 @@
 }
 .gallery-thumbnail {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
   place-items: center;
+  flex-shrink: 0;
+  overflow: hidden;
   width: 72px;
   height: 64px;
   padding: 5px;
@@ -763,8 +770,13 @@
   background: #fff;
 }
 .gallery-thumbnail img {
+  display: block;
+  min-width: 0;
+  min-height: 0;
   width: 100%;
   height: 100%;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: contain;
 }
 .gallery-thumbnail.is-selected {
@@ -941,7 +953,7 @@
 .journal-image img {
   height: 100%;
   width: 100%;
-  object-fit: cover;
+  object-fit: contain;
   transition: transform 0.6s;
 }
 .journal-card:hover img {

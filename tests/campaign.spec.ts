@@ -99,6 +99,33 @@ test('mobile storytelling is sequential rather than pinned and keeps two-column 
   )
 })
 
+test('marquee fills every viewport throughout its seamless loop and responds to resizing', async ({ page }) => {
+  await setup(page)
+  await page.goto('/')
+  for (const width of [320, 1920, 3840, 768]) {
+    await page.setViewportSize({ width, height: 1000 })
+    await page.locator('.kinetic-band').scrollIntoViewIfNeeded()
+    await page.evaluate(() => document.fonts.ready)
+    await expect.poll(() => page.locator('.kinetic-group').first().evaluate((group) =>
+      group.getBoundingClientRect().width >= document.querySelector('.kinetic-band')!.clientWidth,
+    )).toBe(true)
+    for (const phase of [0, 0.25, 0.75, 0.999]) {
+      const covered = await page.locator('.kinetic-track').evaluate((track, progress) => {
+        const animation = track.getAnimations()[0]
+        animation.pause()
+        animation.currentTime = Number(animation.effect!.getTiming().duration) * progress
+        const groups = [...track.children].map((group) => group.getBoundingClientRect())
+        const band = track.parentElement!.getBoundingClientRect()
+        return Math.abs(groups[0].width - groups[1].width) < 1 &&
+          Math.abs(groups[0].right - groups[1].left) < 1 &&
+          groups[0].left <= band.left + 1 && groups[1].right >= band.right - 1
+      }, phase)
+      expect(covered).toBe(true)
+    }
+  }
+  await expect(page.locator('.footer-wordmark')).toHaveText('EZ GO')
+})
+
 test('kinetic typography pauses explicitly and stops outside the viewport', async ({ page }) => {
   await setup(page)
   await page.goto('/')

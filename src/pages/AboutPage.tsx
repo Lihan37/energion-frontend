@@ -8,6 +8,7 @@ import { EnquiryCTA } from '../components/shared/EnquiryCTA'
 import { getProducts } from '../services/productService'
 import { CampaignIntro } from '../components/campaign/CampaignIntro'
 import { CampaignScenes } from '../components/campaign/CampaignScenes'
+import { TeamSection } from '../components/about/TeamSection'
 
 const values = [
   [
@@ -102,6 +103,7 @@ export function AboutPage() {
           </section>
         </Reveal>
       </Container>
+      <TeamSection />
       <section className="section-space about-principles">
         <Container>
           <span className="eyebrow">Our principles</span>

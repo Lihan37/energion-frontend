@@ -55,7 +55,7 @@ export function Footer() {
           </div>
         </div>
         <div className="footer-wordmark" aria-hidden="true">
-          ENERGION
+          EZ GO
         </div>
         <div className="footer-bottom">
           <span>&copy; {new Date().getFullYear()} Energion E-Mobility. All rights reserved.</span>

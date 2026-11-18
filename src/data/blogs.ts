@@ -10,7 +10,7 @@ export const blogs: Blog[] = [
     category: 'Guides',
     author: 'Nadia Rahman',
     coverImage:
-      'https://images.unsplash.com/photo-1511994298241-608e28f14fde?auto=format&fit=crop&w=1200&q=80',
+      'https://res.cloudinary.com/ncdyagc3/image/upload/f_auto,q_auto,w_1200,c_limit/v1794996928/energion/products/evox/evox-black-1-7b21459a47.webp',
     publishedAt: '2026-04-07',
     readTime: '6 min read',
     featured: true,
@@ -44,7 +44,7 @@ export const blogs: Blog[] = [
     category: 'Technology',
     author: 'Imran Hossain',
     coverImage:
-      'https://images.unsplash.com/photo-1485965120184-e220f721d03e?auto=format&fit=crop&w=1200&q=80',
+      'https://res.cloudinary.com/ncdyagc3/image/upload/f_auto,q_auto,w_1200,c_limit/v1794996954/energion/products/nexo/nexo-blue-11-74889bc107.webp',
     publishedAt: '2026-03-29',
     readTime: '5 min read',
     content: [
@@ -72,7 +72,7 @@ export const blogs: Blog[] = [
     category: 'Company',
     author: 'Energion Editorial',
     coverImage:
-      'https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=1200&q=80',
+      'https://res.cloudinary.com/ncdyagc3/image/upload/f_auto,q_auto,w_1200,c_limit/v1794996966/energion/products/sprinto/sprinto-side-olive-1-3x-678648c111.webp',
     publishedAt: '2026-03-12',
     readTime: '4 min read',
     content: [

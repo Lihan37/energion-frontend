@@ -12,7 +12,7 @@ export function BlogCard({ blog }: { blog: Blog }) {
       </div>
       <Link to={`/blog/${blog.slug}`} aria-label={`Read ${blog.title}`}>
         <div className="journal-image">
-          <SmoothImage src={blog.coverImage} alt="" className="h-full w-full object-cover" />
+          <SmoothImage src={blog.coverImage} alt="" className="h-full w-full object-contain p-5" />
         </div>
         <h3>{blog.title}</h3>
       </Link>
