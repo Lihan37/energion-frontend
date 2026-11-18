@@ -55,7 +55,6 @@ export function TeamSection() {
                   />
                 </div>
                 <div className="team-member-info">
-                  <span className="team-member-index" aria-hidden="true">0{index + 2}</span>
                   <div>
                     <h3>{member.name}</h3>
                     <p>{member.role}</p>

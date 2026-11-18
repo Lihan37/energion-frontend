@@ -1130,16 +1130,19 @@
   object-fit: cover;
   object-position: center top;
 }
+.team-member .team-portrait {
+  background: #e3e7dc;
+  isolation: isolate;
+}
+.team-member .team-portrait img {
+  mix-blend-mode: multiply;
+}
 .team-member-info {
   display: flex;
   align-items: baseline;
   gap: 0.75rem;
   padding: 1.25rem 0;
   border-bottom: 2px solid #b7d234;
-}
-.team-member-index {
-  font-size: 10px;
-  color: var(--muted);
 }
 .team-member h3 {
   font: 600 clamp(22px, 2vw, 26px)/1.1 var(--font-display);
