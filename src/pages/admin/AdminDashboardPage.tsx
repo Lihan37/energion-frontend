@@ -21,7 +21,7 @@ import { getAdminSummary } from '../../services/adminService'
 const moduleMeta = [
   {
     title: 'Products',
-    description: 'Manage catalog visibility, pricing, specifications, and modal-ready product content.',
+    description: 'Manage catalog visibility, pricing, specifications, and full product pages.',
     icon: Bike,
     accent: 'from-blue-600/18 to-cyan-400/14',
   },
@@ -111,12 +111,12 @@ export function AdminDashboardPage() {
     {
       label: 'Check dealer coverage',
       value: 'Keep regional dealer points aligned with the latest showroom network across Bangladesh.',
-      href: '#modules',
+      href: '/admin/dealers',
     },
     {
       label: 'Watch incoming leads',
       value: 'Follow contact requests and test ride interest so the customer journey stays responsive.',
-      href: '#overview',
+      href: '/admin/messages',
     },
   ]
 
@@ -249,7 +249,7 @@ export function AdminDashboardPage() {
 
                   return (
                     <Reveal key={item.title} delay={0.05 * index} y={18}>
-                      <div
+                      <Link to={`/admin/${['products', 'blogs', 'dealers', 'messages', 'settings', 'admins'][index]}`}
                         className={`rounded-[1.8rem] border border-[rgba(16,27,45,0.08)] bg-gradient-to-br ${item.accent} p-[1px]`}
                       >
                         <div className="h-full rounded-[1.75rem] bg-white/96 p-5">
@@ -262,7 +262,7 @@ export function AdminDashboardPage() {
                           <h3 className="mt-5 text-xl font-semibold text-slate-950">{item.title}</h3>
                           <p className="mt-3 text-sm leading-7 text-slate-600">{item.description}</p>
                         </div>
-                      </div>
+                      </Link>
                     </Reveal>
                   )
                 })}
@@ -277,8 +277,8 @@ export function AdminDashboardPage() {
                 <div className="mt-4 space-y-4">
                   {commandItems.map((item, index) => (
                     <Reveal key={item.label} delay={0.05 * index} y={18}>
-                      <a
-                        href={item.href}
+                      <Link
+                        to={item.href}
                         className="flex items-start justify-between rounded-[1.5rem] border border-white/10 bg-white/5 px-4 py-4 transition hover:bg-white/8"
                       >
                         <div>
@@ -286,7 +286,7 @@ export function AdminDashboardPage() {
                           <div className="mt-2 max-w-md text-sm leading-7 text-slate-300">{item.value}</div>
                         </div>
                         <ArrowRight className="mt-1 size-4 shrink-0 text-[var(--brand-end)]" />
-                      </a>
+                      </Link>
                     </Reveal>
                   ))}
                 </div>
@@ -304,8 +304,8 @@ export function AdminDashboardPage() {
                     this control panel instantly.
                   </p>
                   <p>
-                    As the backend grows, this dashboard can manage real storefront updates, editorial content,
-                    showroom points, support flow, and internal admin access rules.
+                    Use the active modules to publish stories, maintain dealer points, review enquiries,
+                    update business details, and manage registered operator access.
                   </p>
                 </div>
             </div>

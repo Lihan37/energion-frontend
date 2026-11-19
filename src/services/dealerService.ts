@@ -1,8 +1,5 @@
-import { dealers } from '../data/dealers'
-
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
-
-export async function getDealers() {
-  await delay(250)
-  return dealers
+import { apiClient } from './apiClient'
+import type { Dealer } from '../types/dealer'
+export async function getDealers(): Promise<Dealer[]> {
+  return (await apiClient.get('/content/dealers')).data.dealers
 }

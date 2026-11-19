@@ -5,6 +5,8 @@
 @import './styles/model-pages.css';
 @import './styles/readability.css';
 @import './styles/team.css';
+@import './styles/dealers.css';
+@import './styles/admin-content.css';
 
 @theme {
   --font-sans: 'Outfit', sans-serif;

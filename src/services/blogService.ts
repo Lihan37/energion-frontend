@@ -1,13 +1,14 @@
-import { blogs } from '../data/blogs'
-
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
-
-export async function getBlogs() {
-  await delay(300)
-  return blogs
+import axios from 'axios'
+import { apiClient } from './apiClient'
+import type { Blog } from '../types/blog'
+export async function getBlogs(): Promise<Blog[]> {
+  return (await apiClient.get('/content/blogs')).data.blogs
 }
-
-export async function getBlogBySlug(slug: string) {
-  await delay(200)
-  return blogs.find((blog) => blog.slug === slug) ?? null
+export async function getBlogBySlug(slug: string): Promise<Blog | null> {
+  try {
+    return (await apiClient.get(`/content/blogs/${encodeURIComponent(slug)}`)).data.blog
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 404) return null
+    throw error
+  }
 }

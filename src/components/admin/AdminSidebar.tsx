@@ -2,7 +2,6 @@ import {
   Bike,
   FileText,
   LayoutDashboard,
-  Lock,
   LogOut,
   MapPinned,
   MessageSquare,
@@ -19,11 +18,11 @@ import { Button } from '../ui/Button'
 const sidebarItems = [
   { label: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard, live: true },
   { label: 'Products', href: '/admin/products', icon: Bike, live: true },
-  { label: 'Blogs', href: '', icon: FileText, live: false },
-  { label: 'Dealers / Map Points', href: '', icon: MapPinned, live: false },
-  { label: 'Messages', href: '', icon: MessageSquare, live: false },
-  { label: 'Settings', href: '', icon: Settings, live: false },
-  { label: 'Admins', href: '', icon: ShieldCheck, live: false },
+  { label: 'Blog and Media', href: '/admin/blogs', icon: FileText, live: true },
+  { label: 'Dealers / Map Points', href: '/admin/dealers', icon: MapPinned, live: true },
+  { label: 'Messages', href: '/admin/messages', icon: MessageSquare, live: true },
+  { label: 'Settings', href: '/admin/settings', icon: Settings, live: true },
+  { label: 'Admins', href: '/admin/admins', icon: ShieldCheck, live: true },
 ] as const
 
 export function AdminSidebar() {
@@ -55,24 +54,6 @@ export function AdminSidebar() {
       <nav className="mt-6 space-y-2">
         {sidebarItems.map((item) => {
           const Icon = item.icon
-
-          if (!item.live) {
-            return (
-              <div
-                key={item.label}
-                className="flex items-center justify-between rounded-2xl border border-white/8 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-300 opacity-90"
-              >
-                <span className="flex items-center gap-3">
-                  <Icon className="size-4" />
-                  {item.label}
-                </span>
-                <span className="inline-flex items-center gap-1 text-[11px] uppercase tracking-[0.24em] text-slate-400">
-                  <Lock className="size-3" />
-                  Soon
-                </span>
-              </div>
-            )
-          }
 
           return (
             <NavLink

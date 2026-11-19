@@ -42,9 +42,9 @@ The supplied nine-model catalog uses twenty authentic WebP images uploaded to
 Cloudinary. Galleries, descriptions, image metadata and public visibility can be
 changed in admin. See [the bike import report](docs/BIKE-IMPORT.md).
 
-The original contact service was a simulated submission. The current validated
-form prepares an enquiry email for the configured business email, with explicit
-email-app handoff. A server contact endpoint is required for in-site delivery.
+The validated contact form saves enquiries to the backend admin inbox. This does
+not send an automatic email. Operators can reply by email or phone from Messages.
+See [admin content setup](docs/ADMIN-CONTENT.md) for the coordinated backend update.
 
 Netlify's existing SPA redirect file is preserved. Production runs on the existing
 Energion Netlify site and Railway API; private upload credentials remain backend-only.

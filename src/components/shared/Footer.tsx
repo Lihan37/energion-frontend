@@ -1,11 +1,13 @@
 import { ArrowUpRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { navItems, siteConfig } from '../../constants/site'
+import { navItems } from '../../constants/site'
+import { useSiteConfig } from '../../hooks/useSiteConfig'
 import logo from '../../assets/Energion Mobility logo-01.png'
 import { Container } from '../ui/Container'
 import { CampaignHeading } from '../campaign/CampaignHeading'
 
 export function Footer() {
+  const siteConfig = useSiteConfig()
   return (
     <footer className="site-footer">
       <Container>
@@ -20,12 +22,12 @@ export function Footer() {
             <Link to="/" aria-label="Energion home">
               <img
                 src={logo}
-                alt="Energion E-Mobility"
+                alt={siteConfig.name}
                 className="official-logo rounded-sm bg-white px-2"
               />
             </Link>
             <p className="mt-5 max-w-xs">
-              Electric mobility for the everyday. A cleaner way to move through Bangladesh.
+              {siteConfig.tagline}
             </p>
           </div>
           <div>

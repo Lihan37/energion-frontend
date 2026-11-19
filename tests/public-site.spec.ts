@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect, type Page } from './content-fixture'
 import AxeBuilder from '@axe-core/playwright'
 import { mkdir } from 'node:fs/promises'
 import { readFileSync } from 'node:fs'
@@ -165,12 +165,17 @@ test('mobile menu traps focus, closes on navigation and restores scroll', async 
   expect(await page.evaluate(() => document.body.style.overflow)).not.toBe('hidden')
 })
 
-test('enquiry validates fields and prepares a real email without claiming delivery', async ({
+test('enquiry validates fields and saves the request to the backend inbox', async ({
   page,
 }) => {
   await mockCatalog(page)
+  let submitted: Record<string, string> = {}
+  await page.route('**/api/content/messages', route => {
+    submitted = route.request().postDataJSON()
+    return route.fulfill({ status: 201, json: { message: 'Your enquiry has been saved for our team.' } })
+  })
   await page.goto('/contact?model=NEXO')
-  await page.getByRole('button', { name: 'Prepare enquiry email' }).click()
+  await page.getByRole('button', { name: 'Send enquiry' }).click()
   await expect(page.getByText('Please enter your name')).toBeVisible()
   await page.getByLabel('Your name', { exact: true }).fill('QA Rider')
   await page.getByLabel('Phone number', { exact: true }).fill('01806442201')
@@ -178,13 +183,10 @@ test('enquiry validates fields and prepares a real email without claiming delive
   await page
     .getByLabel('Your message')
     .fill('I would like details about the NEXO electric vehicle.')
-  await page.getByRole('button', { name: 'Prepare enquiry email' }).click()
-  await expect(page.getByRole('link', { name: 'Open email app' })).toHaveAttribute(
-    'href',
-    /^mailto:info@energion-emobility.com\?subject=.*NEXO/,
-  )
-  await expect(page.getByText(/send it to complete your enquiry/i)).toBeVisible()
-  await expect(page.getByText(/message sent|reach out shortly/i)).toHaveCount(0)
+  await page.getByRole('button', { name: 'Send enquiry' }).click()
+  await expect(page.getByText('Your enquiry has been saved for our team.')).toBeVisible()
+  expect(submitted.model).toBe('NEXO')
+  expect(submitted.email).toBe('rider@example.com')
 })
 
 test('API failures show retry instead of fictional products or stock bikes', async ({ page }) => {

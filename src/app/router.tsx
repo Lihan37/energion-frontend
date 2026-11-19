@@ -84,6 +84,29 @@ export const router = createBrowserRouter([
         index: true,
         Component: AdminIndexRedirect,
       },
+      ...(['blogs', 'dealers', 'messages', 'settings', 'admins'] as const).map((path) => ({
+        path,
+        lazy: async () => {
+          const pages = await import('../pages/admin/AdminContentPage')
+          return {
+            Component: function AdminContentRoute() {
+              return (
+                <ProtectedAdminRoute>
+                  {path === 'blogs' || path === 'dealers' ? (
+                    <pages.AdminContentPage key={path} resource={path} />
+                  ) : path === 'messages' ? (
+                    <pages.AdminMessagesPage />
+                  ) : path === 'settings' ? (
+                    <pages.AdminSettingsPage />
+                  ) : (
+                    <pages.AdminAccessPage />
+                  )}
+                </ProtectedAdminRoute>
+              )
+            },
+          }
+        },
+      })),
       {
         path: 'dashboard',
         lazy: async () => {

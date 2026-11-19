@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './content-fixture'
 import { readFileSync } from 'node:fs'
 import type { Product } from '../src/types/product'
 

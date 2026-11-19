@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
-import { Menu, X, ArrowUpRight } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Link, NavLink, useLocation } from 'react-router-dom'
@@ -82,9 +82,6 @@ export function Navbar() {
             <div className="header-actions">
               <Link to={account.href}>{account.label}</Link>
               {user && <button onClick={() => void signOut()}>Logout</button>}
-              <Link to="/contact" className="cta">
-                Enquire now <ArrowUpRight size={15} />
-              </Link>
             </div>
             <button
               className="icon-button mobile-toggle"
@@ -145,9 +142,6 @@ export function Navbar() {
                 ))}
               </nav>
               <div className="mobile-menu-bottom">
-                <Link to="/contact" className="cta" onClick={() => setOpen(false)}>
-                  Enquire now <ArrowUpRight size={18} />
-                </Link>
                 <Link to={account.href} onClick={() => setOpen(false)}>
                   {account.label}
                 </Link>

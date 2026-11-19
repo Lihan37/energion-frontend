@@ -8,7 +8,7 @@ import { Button } from '../components/ui/Button'
 import { Container } from '../components/ui/Container'
 import { Input } from '../components/ui/Input'
 import { Textarea } from '../components/ui/Textarea'
-import { siteConfig } from '../constants/site'
+import { useSiteConfig } from '../hooks/useSiteConfig'
 import { submitContactMessage } from '../services/contactService'
 import { CampaignIntro } from '../components/campaign/CampaignIntro'
 import { CampaignPhotoPanel } from '../components/campaign/CampaignScenes'
@@ -24,6 +24,7 @@ const schema = z.object({
 type Values = z.infer<typeof schema>
 
 export function ContactPage() {
+  const siteConfig = useSiteConfig()
   const [params] = useSearchParams()
   const {
     register,
@@ -87,8 +88,7 @@ export function ContactPage() {
         <div className="contact-form">
           <h2 className="font-display text-3xl uppercase">Tell us what's on your mind.</h2>
           <p className="form-note mt-3 mb-6">
-            Complete this form to prepare an enquiry email. Your email app will open when you choose
-            to send it.
+            Send your enquiry directly to our team. We will use your contact details to respond.
           </p>
           <form
             className="space-y-5"
@@ -132,19 +132,16 @@ export function ContactPage() {
             />
             {mutation.isError && (
               <p role="alert" className="text-sm text-red-700">
-                Could not prepare your enquiry. Please call or email our team directly.
+                Could not send your enquiry. Please try again, or call or email our team directly.
               </p>
             )}
             {mutation.isSuccess ? (
               <div role="status" className="rounded border border-brand-500 bg-surface-50 p-4">
                 <p className="form-note">{mutation.data.message}</p>
-                <a href={mutation.data.mailto} className="cta mt-4">
-                  Open email app <ArrowUpRight size={16} />
-                </a>
               </div>
             ) : (
               <Button type="submit" disabled={mutation.isPending}>
-                {mutation.isPending ? 'Preparing...' : 'Prepare enquiry email'}
+                {mutation.isPending ? 'Sending...' : 'Send enquiry'}
                 <ArrowUpRight size={16} />
               </Button>
             )}

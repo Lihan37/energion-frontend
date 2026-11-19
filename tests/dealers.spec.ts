@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './content-fixture'
 import { dealers } from '../src/data/dealers'
 
 test('dealer catalog has the 37 supplied locations without invented contact details', () => {
@@ -55,4 +55,27 @@ test('all dealer areas, address search, directions and empty-state reset work', 
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(
     true,
   )
+})
+
+test('dealer directory uses the wide viewport instead of a side rail', async ({ page }) => {
+  await page.route('**/api/auth/me', (route) => route.fulfill({ status: 401, json: {} }))
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  for (const width of [320, 768, 1440, 1920]) {
+    await page.setViewportSize({ width, height: 1000 })
+    await page.goto('/map')
+    await expect(page.locator('.dealer-card')).toHaveCount(37)
+    const grid = page.locator('.dealer-results-grid')
+    const columns = await grid.evaluate(
+      (element) => getComputedStyle(element).gridTemplateColumns.split(' ').length,
+    )
+    expect(columns).toBe(width < 768 ? 1 : width <= 1100 ? 2 : width < 1700 ? 3 : 4)
+    if (width >= 1440) {
+      const bounds = await grid.boundingBox()
+      expect(bounds!.width).toBeGreaterThan(width * 0.9)
+      expect(bounds!.x).toBeLessThanOrEqual(56)
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(
+      true,
+    )
+  }
 })

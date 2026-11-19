@@ -9,11 +9,12 @@ import { SpecificationHighlights } from '../components/product/SpecificationHigh
 import { VehicleImage } from '../components/product/VehicleImage'
 import { CatalogState } from '../components/ui/CatalogState'
 import { Container } from '../components/ui/Container'
-import { siteConfig } from '../constants/site'
+import { useSiteConfig } from '../hooks/useSiteConfig'
 import { enquiryUrl, productMetrics, productUrl } from '../lib/productPresentation'
 import { getProducts } from '../services/productService'
 
 export function ProductDetailsPage() {
+  const siteConfig = useSiteConfig()
   const { slug } = useParams()
   const query = useQuery({ queryKey: ['products'], queryFn: getProducts })
   const product = query.data?.find((item) => item.slug === slug)

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from './content-fixture'
 
 test.beforeEach(async ({ page }) => {
   await page.route('**/api/auth/me', (route) => route.fulfill({ status: 401, json: {} }))
@@ -13,9 +13,15 @@ test('desktop navigation is readable and fits without overlaps', async ({ page }
     await page.goto('/products')
     const nav = page.getByRole('navigation', { name: 'Main navigation', exact: true })
     await expect(nav.getByRole('link', { name: 'Blog and Media', exact: true })).toBeVisible()
+    await expect(nav.getByRole('link', { name: 'Contact', exact: true })).toHaveCount(1)
+    await expect(
+      page.locator('.site-header').getByRole('link', { name: 'Enquire now' }),
+    ).toHaveCount(0)
     await expect(nav.locator('a').first()).toHaveCSS('font-size', '14px')
     const bounds = await page.locator('.header-inner').evaluate((header) => {
-      const children = [...header.children].filter((child) => getComputedStyle(child).display !== 'none')
+      const children = [...header.children].filter(
+        (child) => getComputedStyle(child).display !== 'none',
+      )
       return children.map((child) => {
         const box = child.getBoundingClientRect()
         return { left: box.left, right: box.right }
@@ -33,6 +39,8 @@ test('mobile menu shows the renamed link and navigates to the journal', async ({
   await page.goto('/products')
   await page.getByRole('button', { name: 'Open navigation' }).click()
   const dialog = page.getByRole('dialog', { name: 'Mobile navigation' })
+  await expect(dialog.getByRole('link', { name: 'Contact', exact: true })).toHaveCount(1)
+  await expect(dialog.getByRole('link', { name: 'Enquire now' })).toHaveCount(0)
   await dialog.getByRole('link', { name: 'Blog and Media', exact: true }).click()
   await expect(page).toHaveURL(/\/blog$/)
   await expect(dialog).toHaveCount(0)
