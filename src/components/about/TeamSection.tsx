@@ -11,9 +11,13 @@ export function TeamSection() {
         <div className="team-intro">
           <div>
             <span className="eyebrow">The people behind EZ GO</span>
-            <h2 id="team-heading" className="section-title mt-5">Our team. Shared ambition.</h2>
+            <h2 id="team-heading" className="section-title mt-5">
+              Our team. <span>Shared ambition.</span>
+            </h2>
           </div>
-          <p className="body-copy">Meet the people bringing our homegrown electric brand to life.</p>
+          <p className="body-copy">
+            Meet the people bringing our homegrown electric brand to life.
+          </p>
         </div>
         <Reveal duration={0.9} y={48}>
           <article className="team-founder" aria-labelledby="founder-name">
@@ -32,7 +36,10 @@ export function TeamSection() {
                 <p className="founder-role">{founder.role}</p>
               </div>
               <div className="founder-purpose">
-                <p>A homegrown brand.<br />A shared ambition.</p>
+                <p>
+                  A homegrown brand.
+                  <br />A shared ambition.
+                </p>
                 <span>Bringing new energy to everyday mobility in Bangladesh.</span>
               </div>
             </div>
@@ -44,7 +51,13 @@ export function TeamSection() {
         </div>
         <div className="team-grid">
           {members.map((member, index) => (
-            <Reveal key={member.photo} delay={index * 0.16} duration={0.85} y={48} className="team-reveal">
+            <Reveal
+              key={member.photo}
+              delay={index * 0.16}
+              duration={0.85}
+              y={48}
+              className="team-reveal"
+            >
               <article className="team-member">
                 <div className="team-portrait">
                   <SmoothImage

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
-import { ArrowUpRight, MapPin, Phone } from 'lucide-react'
-import { useState } from 'react'
+import { ArrowUpRight, MapPin, Phone, Search } from 'lucide-react'
+import { useDeferredValue, useState } from 'react'
 import { Container } from '../components/ui/Container'
 import { getDealers } from '../services/dealerService'
 import { CatalogState } from '../components/ui/CatalogState'
@@ -12,10 +12,16 @@ import { campaignPhotos } from '../constants/campaignPhotos'
 export function MapPage() {
   const query = useQuery({ queryKey: ['dealers'], queryFn: getDealers })
   const [region, setRegion] = useState('')
+  const [search, setSearch] = useState('')
+  const deferredSearch = useDeferredValue(search.trim().toLowerCase())
   const dealers = query.data ?? []
   const regions = [...new Set(dealers.map((dealer) => dealer.region))]
-  const current = regions.includes(region) ? region : regions[0]
-  const filtered = dealers.filter((dealer) => dealer.region === current)
+  const current = regions.includes(region) ? region : ''
+  const filtered = dealers.filter(
+    (dealer) =>
+      (!current || dealer.region === current) &&
+      `${dealer.showroom} ${dealer.city} ${dealer.address}`.toLowerCase().includes(deferredSearch),
+  )
   return (
     <Container>
       <CampaignIntro
@@ -23,23 +29,50 @@ export function MapPage() {
         index="04"
         tone="lime"
         lines={['Find your', 'Energion.']}
-        description="Discover dealer points across Bangladesh. Choose your region and find a place to begin your electric journey."
+        description="Discover dealer points across Bangladesh. Search your town or choose a dealer area to find your next stop."
       />
       {query.isPending || query.isError ? (
         <CatalogState error={query.isError} retry={() => void query.refetch()} />
       ) : (
         <div className="dealer-layout">
-          <nav className="region-list" aria-label="Dealer regions">
+          <nav className="region-list" aria-label="Dealer areas">
+            <button aria-pressed={!current} onClick={() => setRegion('')}>
+              All areas ({dealers.length})
+            </button>
             {regions.map((item) => (
               <button key={item} aria-pressed={current === item} onClick={() => setRegion(item)}>
-                {item}
+                {item} ({dealers.filter((dealer) => dealer.region === item).length})
               </button>
             ))}
           </nav>
           <section>
+            <label className="catalog-search mb-5">
+              <Search aria-hidden="true" />
+              <span className="sr-only">Search dealer points</span>
+              <input
+                type="search"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Search showroom, town or address"
+              />
+            </label>
             <p className="mb-5 text-xs text-slate-500" role="status">
-              {filtered.length} locations / {current}
+              {filtered.length} locations / {current || 'All areas'}
             </p>
+            {!filtered.length && (
+              <div className="status-panel">
+                <h2>No matching dealer points.</h2>
+                <button
+                  className="cta"
+                  onClick={() => {
+                    setSearch('')
+                    setRegion('')
+                  }}
+                >
+                  Show all dealer points
+                </button>
+              </div>
+            )}
             <div className="grid gap-4 lg:grid-cols-2">
               {filtered.map((dealer) => (
                 <article className="dealer-card" key={dealer.id}>
